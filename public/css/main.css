@@ -14,7 +14,7 @@ body {
 }
 
 .navbar {
-    background: #4f46e5;
+    background: #1e293b;
     padding: 0 3rem;
     height: 70px;
     display: flex;
@@ -23,7 +23,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .nav-logo {
@@ -37,10 +37,11 @@ body {
 .nav-links {
     display: flex;
     gap: 2rem;
+    align-items: center;
 }
 
 .nav-links a {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.75);
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
@@ -53,7 +54,30 @@ body {
 .nav-links a.active {
     color: white;
     font-weight: 700;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid #f97316;
+}
+
+.btn-admin {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-admin:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.btn-admin.active {
+    background: #f97316;
+    color: white;
+    border-color: #f97316;
 }
 
 .container {
@@ -103,8 +127,8 @@ body {
 .filters select:focus,
 .filters input:focus {
     outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
 }
 
 .form-container {
@@ -153,8 +177,8 @@ body {
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
 }
 
 .form-actions {
@@ -165,7 +189,7 @@ body {
 }
 
 .btn-primary {
-    background: #4f46e5;
+    background: #f97316;
     color: white;
     border: none;
     padding: 0.6rem 1.5rem;
@@ -177,7 +201,7 @@ body {
 }
 
 .btn-primary:hover {
-    background: #4338ca;
+    background: #ea6c0a;
     transform: translateY(-1px);
 }
 
@@ -198,8 +222,8 @@ body {
 }
 
 .btn-edit {
-    background: #ede9fe;
-    color: #4f46e5;
+    background: #fff7ed;
+    color: #f97316;
     border: none;
     padding: 0.35rem 0.85rem;
     border-radius: 6px;
@@ -210,7 +234,7 @@ body {
 }
 
 .btn-edit:hover {
-    background: #ddd6fe;
+    background: #ffedd5;
 }
 
 .btn-delete {
@@ -229,6 +253,25 @@ body {
     background: #fecaca;
 }
 
+.btn-join {
+    background: #f97316;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+    align-self: flex-start;
+}
+
+.btn-join:hover {
+    background: #ea6c0a;
+    transform: translateY(-1px);
+}
+
 .card-actions {
     display: flex;
     gap: 0.5rem;
@@ -236,8 +279,8 @@ body {
 
 .badge {
     display: inline-block;
-    background: #ede9fe;
-    color: #4f46e5;
+    background: #fff7ed;
+    color: #f97316;
     font-size: 0.75rem;
     font-weight: 700;
     padding: 0.25rem 0.75rem;
@@ -277,8 +320,8 @@ body {
 }
 
 .footer {
-    background: #1f2937;
-    color: #9ca3af;
+    background: #1e293b;
+    color: #94a3b8;
     text-align: center;
     padding: 1.5rem;
     font-size: 0.875rem;
@@ -286,7 +329,7 @@ body {
 }
 
 .hero {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     color: white;
     padding: 4rem 3rem;
     text-align: center;
@@ -301,7 +344,7 @@ body {
 
 .hero p {
     font-size: 1.1rem;
-    opacity: 0.85;
+    opacity: 0.8;
     margin-bottom: 2rem;
 }
 
@@ -312,7 +355,7 @@ body {
     margin: 0 auto 1.75rem;
     background: white;
     border-radius: 30px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
     overflow: hidden;
 }
 
@@ -323,10 +366,11 @@ body {
     font-size: 1rem;
     outline: none;
     background: transparent;
+    color: #111827;
 }
 
 .hero-search-btn {
-    background: #4f46e5;
+    background: #f97316;
     border: none;
     padding: 0.8rem 1.1rem;
     cursor: pointer;
@@ -336,7 +380,7 @@ body {
 }
 
 .hero-search-btn:hover {
-    background: #4338ca;
+    background: #ea6c0a;
 }
 
 .category-filters {
@@ -347,9 +391,9 @@ body {
 }
 
 .filter-btn {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     padding: 0.45rem 1.1rem;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -360,10 +404,10 @@ body {
 
 .filter-btn:hover,
 .filter-btn.active {
-    background: white;
-    color: #4f46e5;
+    background: #f97316;
+    color: white;
     font-weight: 700;
-    border-color: white;
+    border-color: #f97316;
 }
 
 .section-title {
@@ -371,4 +415,65 @@ body {
     font-weight: 800;
     margin-bottom: 1.5rem;
     color: #111827;
+}
+
+.detail-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.detail-box {
+    background: white;
+    border-radius: 14px;
+    padding: 2.5rem;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.detail-box h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    color: #111827;
+}
+
+.detail-box p {
+    font-size: 0.95rem;
+    color: #374151;
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+}
+
+.detail-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #6b7280;
+    line-height: 1;
+}
+
+.detail-close:hover {
+    color: #111827;
+}
+
+.detail-meta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
 }

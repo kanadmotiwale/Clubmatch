@@ -34,21 +34,15 @@
     line-height: 1.6;
 }
 
-.club-card-expanded {
-    border-top: 1px solid #f3f4f6;
-    margin-top: 0.5rem;
-    padding-top: 0.75rem;
-    font-size: 0.875rem;
-    color: #374151;
-    line-height: 1.6;
+.club-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.25rem;
 }
 
-.club-card-expanded p {
-    color: #374151;
-    margin-bottom: 0.4rem;
-}
-
-.club-card-expanded span {
-    font-weight: 600;
-    color: #4f46e5;
+.click-hint {
+    font-size: 0.78rem;
+    color: #f97316;
+    font-weight: 500;
 }
