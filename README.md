@@ -171,9 +171,6 @@ The application can be deployed to:
 
 Make sure to set environment variables in your hosting platform's dashboard.
 
-## Video Demo
-
-[Link to narrated video demonstration]
 
 ## License
 
@@ -181,5 +178,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Course Instructor: John Guerra
+- Course Instructor: John Alexis Guerra Gomez
 - Northeastern University - Khoury College of Computer Sciences
