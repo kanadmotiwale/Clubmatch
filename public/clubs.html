@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clubs · ClubMatch</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/clubs.css" />
+</head>
+<body>
+<nav class="navbar">
+    <a href="/" class="nav-logo">🎯 ClubMatch</a>
+    <div class="nav-links">
+        <a href="/clubs.html" class="active">Clubs</a>
+        <a href="/membership-logs.html">Membership Logs</a>
+        <a href="/members.html">Members</a>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="page-header">
+        <h1>Clubs</h1>
+        <button id="add-club-btn" class="btn-primary">+ Add Club</button>
+    </div>
+
+    <div class="filters">
+        <select id="filter-category">
+            <option value="">All Categories</option>
+            <option value="Academic">Academic</option>
+            <option value="Cultural">Cultural</option>
+            <option value="Sports">Sports</option>
+            <option value="Professional">Professional</option>
+            <option value="Arts">Arts</option>
+            <option value="Service">Service</option>
+        </select>
+        <select id="filter-time">
+            <option value="">Any Hours</option>
+            <option value="2">Up to 2 hrs/week</option>
+            <option value="4">Up to 4 hrs/week</option>
+            <option value="6">Up to 6 hrs/week</option>
+            <option value="10">Up to 10 hrs/week</option>
+        </select>
+    </div>
+
+    <div id="club-form-container" class="form-container hidden">
+        <h2 id="form-title">Add Club</h2>
+        <form id="club-form">
+            <input type="hidden" id="club-id" />
+            <div class="form-group">
+                <label for="club-name">Club Name</label>
+                <input type="text" id="club-name" required />
+            </div>
+            <div class="form-group">
+                <label for="club-category">Category</label>
+                <select id="club-category" required>
+                    <option value="">Select a category</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Cultural">Cultural</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Professional">Professional</option>
+                    <option value="Arts">Arts</option>
+                    <option value="Service">Service</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="club-description">Description</label>
+                <textarea id="club-description" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="club-hours">Weekly Time Commitment (hrs)</label>
+                <input type="number" id="club-hours" min="1" required />
+            </div>
+            <div class="form-actions">
+                <button type="button" id="cancel-club-btn" class="btn-secondary">Cancel</button>
+                <button type="submit" class="btn-primary">Save Club</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="clubs-list" class="clubs-grid"></div>
+</main>
+
+<footer class="footer">
+    <p>CS5610 Web Development · Northeastern University · Kanad Motiwale & Aarya Patil</p>
+</footer>
+
+<script type="module" src="/js/clubs.js"></script>
+</body>
+</html>
