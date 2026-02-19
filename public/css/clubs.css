@@ -1,0 +1,32 @@
+.club-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: box-shadow 0.2s;
+}
+
+.club-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.club-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.club-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.club-card p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.5;
+}

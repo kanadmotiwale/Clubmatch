@@ -1,0 +1,52 @@
+.log-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: box-shadow 0.2s;
+}
+
+.log-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.log-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.log-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.log-card p {
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.label-benefits {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.label-challenges {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.stats-banner {
+    background: #ede9fe;
+    color: #4f46e5;
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
