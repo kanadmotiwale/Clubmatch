@@ -1,7 +1,7 @@
-# ClubMatch — Discover Student Organizations
+# ClubMatch - Discover Student Organizations
 
 **Author:** Kanad Motiwale & Aarya Patil
-**Class:** [CS5610 Web Development — Northeastern University](https://johnguerra.co/classes/webDevelopment_spring_2025/)
+**Class:** [CS5610 Web Development - Northeastern University](https://johnguerra.co/classes/webDevelopment_spring_2025/)
 
 ---
 
@@ -35,9 +35,9 @@ ClubMatch is a full-stack web platform that brings all of that into one place. S
 - Submit and read membership logs with benefits, challenges, and weekly hours
 - Average weekly hours stat per club calculated from real member logs
 - Student profile registration with major, year, interests, and joined clubs
-- Full CRUD on all three collections — clubs, membership logs, and users
+- Full CRUD on all three collections - clubs, membership logs, and users
 - 1100+ seeded records across all collections
-- Client-side rendering using only vanilla JavaScript — no frameworks
+- Client-side rendering using only vanilla JavaScript - no frameworks
 
 ---
 
@@ -146,4 +146,4 @@ npm run format    # Format code with Prettier
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
