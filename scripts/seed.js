@@ -55,3 +55,87 @@ const lastNames = [
   "Davis", "Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson",
   "White", "Harris", "Martin", "Thompson", "Lee", "Patel",
 ];
+
+function pick(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function pickMultiple(arr, min = 1, max = 3) {
+    const count = Math.floor(Math.random() * (max - min + 1)) + min;
+    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateClubs(count) {
+    return Array.from({ length: count }, (_, i) => ({
+        name: `${pick(clubNames)} ${i + 1}`,
+        category: pick(categories),
+        description: `A student organization focused on ${pick(categories).toLowerCase()} activities and professional development. Open to all students regardless of experience level.`,
+        weeklyTimeCommitment: randomInt(1, 12),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }));
+}
+
+function generateLogs(count, clubs) {
+    return Array.from({ length: count }, () => ({
+        clubName: pick(clubs).name,
+        weeklyHours: randomInt(1, 12),
+        benefits: pick(benefits),
+        challenges: pick(challenges),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }));
+}
+
+function generateUsers(count) {
+    return Array.from({ length: count }, (_, i) => {
+        const first = pick(firstNames);
+        const last = pick(lastNames);
+        return {
+            name: `${first} ${last}`,
+            email: `${first.toLowerCase()}.${last.toLowerCase()}${i}@northeastern.edu`,
+            major: pick(majors),
+            year: pick(years),
+            bio: `${pick(years)} student at Northeastern interested in ${pick(categories).toLowerCase()} and ${pick(categories).toLowerCase()} activities.`,
+            interests: pickMultiple(interests, 1, 3),
+            joinedClubs: pickMultiple(clubNames, 0, 2),
+            createdAt: new Date(),
+        };
+    });
+}
+
+async function seed() {
+    try {
+        await client.connect();
+        const db = client.db("clubmatch");
+
+        await db.collection("clubs").deleteMany({});
+        await db.collection("membership_logs").deleteMany({});
+        await db.collection("users").deleteMany({});
+
+        const clubs = generateClubs(400);
+        await db.collection("clubs").insertMany(clubs);
+        console.log(`Inserted ${clubs.length} clubs`);
+
+        const logs = generateLogs(400, clubs);
+        await db.collection("membership_logs").insertMany(logs);
+        console.log(`Inserted ${logs.length} membership logs`);
+
+        const users = generateUsers(300);
+        await db.collection("users").insertMany(users);
+        console.log(`Inserted ${users.length} users`);
+
+        console.log("Seeding complete — 1100 total records inserted");
+    } catch (err) {
+        console.error("Seeding failed:", err);
+    } finally {
+        await client.close();
+    }
+}
+
+seed();
