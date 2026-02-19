@@ -18,7 +18,7 @@ app.use("/api/membership-logs", logsRouter);
 app.use("/api/users", usersRouter);
 
 connectDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });

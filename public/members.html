@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -21,11 +21,17 @@
     <main class="container">
       <div class="page-header">
         <h1>Members</h1>
-        <button id="create-profile-btn" class="btn-primary">+ Create My Profile</button>
+        <button id="create-profile-btn" class="btn-primary">
+          + Create My Profile
+        </button>
       </div>
 
       <div class="filters">
-        <input type="text" id="search-members" placeholder="Search by name or interest..." />
+        <input
+          type="text"
+          id="search-members"
+          placeholder="Search by name or interest..."
+        />
       </div>
 
       <div id="profile-form-container" class="form-container hidden">
@@ -57,18 +63,32 @@
           </div>
           <div class="form-group">
             <label for="profile-bio">Bio</label>
-            <textarea id="profile-bio" rows="3" placeholder="Tell others a bit about yourself..."></textarea>
+            <textarea
+              id="profile-bio"
+              rows="3"
+              placeholder="Tell others a bit about yourself..."
+            ></textarea>
           </div>
           <div class="form-group">
             <label for="profile-interests">Interests (comma separated)</label>
-            <input type="text" id="profile-interests" placeholder="e.g. Academic, Sports, Arts" />
+            <input
+              type="text"
+              id="profile-interests"
+              placeholder="e.g. Academic, Sports, Arts"
+            />
           </div>
           <div class="form-group">
             <label for="profile-clubs">Joined Clubs (comma separated)</label>
-            <input type="text" id="profile-clubs" placeholder="e.g. Robotics Club, Debate Team" />
+            <input
+              type="text"
+              id="profile-clubs"
+              placeholder="e.g. Robotics Club, Debate Team"
+            />
           </div>
           <div class="form-actions">
-            <button type="button" id="cancel-profile-btn" class="btn-secondary">Cancel</button>
+            <button type="button" id="cancel-profile-btn" class="btn-secondary">
+              Cancel
+            </button>
             <button type="submit" class="btn-primary">Save Profile</button>
           </div>
         </form>
@@ -85,7 +105,10 @@
     </div>
 
     <footer class="footer">
-      <p>CS5610 Web Development · Northeastern University · Kanad Motiwale & Aarya Patil</p>
+      <p>
+        CS5610 Web Development · Northeastern University · Kanad Motiwale &
+        Aarya Patil
+      </p>
     </footer>
 
     <script type="module" src="/js/members.js"></script>

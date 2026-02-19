@@ -13,43 +13,45 @@ let allClubs = [];
 let activeCategory = "";
 
 adminBtn.addEventListener("click", () => {
-    if (isAdmin) {
-        isAdmin = false;
-        adminBtn.classList.remove("active");
-        adminBtn.textContent = "Admin";
-    } else {
-        const pwd = prompt("Enter admin password:");
-        if (pwd === ADMIN_PASSWORD) {
-            isAdmin = true;
-            adminBtn.classList.add("active");
-            adminBtn.textContent = "Admin ✓";
-        } else if (pwd !== null) {
-            alert("Incorrect password.");
-        }
+  if (isAdmin) {
+    isAdmin = false;
+    adminBtn.classList.remove("active");
+    adminBtn.textContent = "Admin";
+  } else {
+    const pwd = prompt("Enter admin password:");
+    if (pwd === ADMIN_PASSWORD) {
+      isAdmin = true;
+      adminBtn.classList.add("active");
+      adminBtn.textContent = "Admin ✓";
+    } else if (pwd !== null) {
+      alert("Incorrect password.");
     }
+  }
 });
 
 async function loadClubs(category = "", search = "") {
-    try {
-        const url = category ? `/clubs?category=${encodeURIComponent(category)}` : "/clubs";
-        allClubs = await api.get(url);
-        const filtered = allClubs.filter((c) =>
-            c.name.toLowerCase().includes(search.toLowerCase())
-        );
-        renderClubs(filtered);
-    } catch (err) {
-        grid.innerHTML = `<p class="error">Failed to load clubs.</p>`;
-    }
+  try {
+    const url = category
+      ? `/clubs?category=${encodeURIComponent(category)}`
+      : "/clubs";
+    allClubs = await api.get(url);
+    const filtered = allClubs.filter((c) =>
+      c.name.toLowerCase().includes(search.toLowerCase())
+    );
+    renderClubs(filtered);
+  } catch (err) {
+    grid.innerHTML = `<p class="error">Failed to load clubs.</p>`;
+  }
 }
 
 function renderClubs(clubs) {
-    if (clubs.length === 0) {
-        grid.innerHTML = `<p class="empty">No clubs found.</p>`;
-        return;
-    }
-    grid.innerHTML = clubs
-        .map(
-            (c) => `
+  if (clubs.length === 0) {
+    grid.innerHTML = `<p class="empty">No clubs found.</p>`;
+    return;
+  }
+  grid.innerHTML = clubs
+    .map(
+      (c) => `
     <div class="club-card" data-id="${c._id}" style="cursor:pointer;">
       <span class="badge">${c.category}</span>
       <h3>${c.name}</h3>
@@ -58,21 +60,21 @@ function renderClubs(clubs) {
       <span class="click-hint">Click to view details & join →</span>
     </div>
   `
-        )
-        .join("");
+    )
+    .join("");
 
-    grid.querySelectorAll(".club-card").forEach((card) => {
-        card.addEventListener("click", () => {
-            const club = allClubs.find((c) => c._id === card.dataset.id);
-            if (club) showDetail(club);
-        });
+  grid.querySelectorAll(".club-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const club = allClubs.find((c) => c._id === card.dataset.id);
+      if (club) showDetail(club);
     });
+  });
 }
 
 function showDetail(club) {
-    const overlay = document.createElement("div");
-    overlay.className = "detail-overlay";
-    overlay.innerHTML = `
+  const overlay = document.createElement("div");
+  overlay.className = "detail-overlay";
+  overlay.innerHTML = `
     <div class="detail-box">
       <button class="detail-close" id="detail-close">✕</button>
       <div class="detail-meta">
@@ -84,27 +86,31 @@ function showDetail(club) {
       <p>To join this club, head over to the <a href="/clubs.html" style="color:#f97316;font-weight:600;">Clubs page</a> and click on the club to register.</p>
     </div>
   `;
-    document.body.appendChild(overlay);
-    overlay.querySelector("#detail-close").addEventListener("click", () => overlay.remove());
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+  overlay
+    .querySelector("#detail-close")
+    .addEventListener("click", () => overlay.remove());
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
 }
 
 function triggerSearch() {
-    loadClubs(activeCategory, searchInput.value);
+  loadClubs(activeCategory, searchInput.value);
 }
 
 filterBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-        filterBtns.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        activeCategory = btn.dataset.category;
-        loadClubs(activeCategory, searchInput.value);
-    });
+  btn.addEventListener("click", () => {
+    filterBtns.forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeCategory = btn.dataset.category;
+    loadClubs(activeCategory, searchInput.value);
+  });
 });
 
 searchBtn.addEventListener("click", triggerSearch);
 searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") triggerSearch();
+  if (e.key === "Enter") triggerSearch();
 });
 
 loadClubs();

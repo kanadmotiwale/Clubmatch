@@ -1,60 +1,62 @@
 .logs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-    gap: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 1.25rem;
 }
 
 .log-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    transition: box-shadow 0.2s, transform 0.2s;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .log-card:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .log-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .log-card h3 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #111827;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
 }
 
 .log-card p {
-    font-size: 0.9rem;
-    color: #374151;
-    line-height: 1.6;
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.6;
 }
 
 .label-benefits {
-    color: #16a34a;
-    font-weight: 700;
+  color: #16a34a;
+  font-weight: 700;
 }
 
 .label-challenges {
-    color: #dc2626;
-    font-weight: 700;
+  color: #dc2626;
+  font-weight: 700;
 }
 
 .stats-banner {
-    background: linear-gradient(135deg, #fff7ed, #ffedd5);
-    color: #c2410c;
-    border-radius: 10px;
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1.75rem;
-    border: 1px solid #fed7aa;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  color: #c2410c;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.75rem;
+  border: 1px solid #fed7aa;
 }
