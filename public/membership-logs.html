@@ -14,21 +14,18 @@
         <a href="/clubs.html">Clubs</a>
         <a href="/membership-logs.html" class="active">Membership Logs</a>
         <a href="/members.html">Members</a>
+        <button class="btn-admin" id="admin-btn">Admin</button>
     </div>
 </nav>
 
 <main class="container">
     <div class="page-header">
         <h1>Membership Logs</h1>
-        <button id="add-log-btn" class="btn-primary">+ Add Log</button>
+        <button id="add-log-btn" class="btn-primary hidden">+ Add Log</button>
     </div>
 
     <div class="filters">
-        <input
-                type="text"
-                id="filter-club"
-                placeholder="Filter by club name..."
-        />
+        <input type="text" id="filter-club" placeholder="Filter by club name..." />
     </div>
 
     <div id="stats-banner" class="stats-banner hidden">

@@ -10,6 +10,31 @@ const filterClub = document.getElementById("filter-club");
 const statsBanner = document.getElementById("stats-banner");
 const statsClubName = document.getElementById("stats-club-name");
 const statsAvg = document.getElementById("stats-avg");
+const adminBtn = document.getElementById("admin-btn");
+
+const ADMIN_PASSWORD = "clubmatch2025";
+let isAdmin = false;
+
+adminBtn.addEventListener("click", () => {
+    if (isAdmin) {
+        isAdmin = false;
+        adminBtn.classList.remove("active");
+        adminBtn.textContent = "Admin";
+        addBtn.classList.add("hidden");
+        loadLogs();
+    } else {
+        const pwd = prompt("Enter admin password:");
+        if (pwd === ADMIN_PASSWORD) {
+            isAdmin = true;
+            adminBtn.classList.add("active");
+            adminBtn.textContent = "Admin ✓";
+            addBtn.classList.remove("hidden");
+            loadLogs();
+        } else if (pwd !== null) {
+            alert("Incorrect password.");
+        }
+    }
+});
 
 async function loadLogs() {
     try {
@@ -40,31 +65,30 @@ function renderLogs(logs) {
         list.innerHTML = `<p class="empty">No logs found.</p>`;
         return;
     }
-    list.innerHTML = `<div class="logs-grid">${logs
-        .map(
-            (l) => `
+    list.innerHTML = `<div class="logs-grid">${logs.map((l) => `
     <div class="log-card">
       <div class="log-card-header">
         <h3>${l.clubName}</h3>
+        ${isAdmin ? `
         <div class="card-actions">
           <button class="btn-edit" data-id="${l._id}">Edit</button>
           <button class="btn-delete" data-id="${l._id}">Delete</button>
-        </div>
+        </div>` : ""}
       </div>
       <span class="hours">⏱ ${l.weeklyHours} hrs/week</span>
       <p><span class="label-benefits">✓ Benefits:</span> ${l.benefits}</p>
       <p><span class="label-challenges">✗ Challenges:</span> ${l.challenges}</p>
     </div>
-  `
-        )
-        .join("")}</div>`;
+  `).join("")}</div>`;
 
-    list.querySelectorAll(".btn-edit").forEach((btn) => {
-        btn.addEventListener("click", () => openEdit(btn.dataset.id));
-    });
-    list.querySelectorAll(".btn-delete").forEach((btn) => {
-        btn.addEventListener("click", () => deleteLog(btn.dataset.id));
-    });
+    if (isAdmin) {
+        list.querySelectorAll(".btn-edit").forEach((btn) => {
+            btn.addEventListener("click", () => openEdit(btn.dataset.id));
+        });
+        list.querySelectorAll(".btn-delete").forEach((btn) => {
+            btn.addEventListener("click", () => deleteLog(btn.dataset.id));
+        });
+    }
 }
 
 function openAdd() {

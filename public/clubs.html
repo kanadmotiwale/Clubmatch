@@ -14,13 +14,14 @@
         <a href="/clubs.html" class="active">Clubs</a>
         <a href="/membership-logs.html">Membership Logs</a>
         <a href="/members.html">Members</a>
+        <button class="btn-admin" id="admin-btn">Admin</button>
     </div>
 </nav>
 
 <main class="container">
     <div class="page-header">
         <h1>Clubs</h1>
-        <button id="add-club-btn" class="btn-primary">+ Add Club</button>
+        <button id="add-club-btn" class="btn-primary hidden">+ Add Club</button>
     </div>
 
     <div class="filters">
@@ -79,6 +80,51 @@
 
     <div id="clubs-list" class="clubs-grid"></div>
 </main>
+
+<div id="club-detail-overlay" class="detail-overlay hidden">
+    <div class="detail-box">
+        <button class="detail-close" id="detail-close">✕</button>
+        <div id="detail-content"></div>
+    </div>
+</div>
+
+<div id="join-form-overlay" class="detail-overlay hidden">
+    <div class="detail-box">
+        <button class="detail-close" id="join-close">✕</button>
+        <h2>Join This Club</h2>
+        <p style="margin-bottom:1.25rem; color:#6b7280;">Fill in your details to register for this club.</p>
+        <form id="join-form">
+            <input type="hidden" id="join-club-name" />
+            <div class="form-group">
+                <label for="join-name">Full Name</label>
+                <input type="text" id="join-name" required />
+            </div>
+            <div class="form-group">
+                <label for="join-email">Email</label>
+                <input type="email" id="join-email" required />
+            </div>
+            <div class="form-group">
+                <label for="join-major">Major</label>
+                <input type="text" id="join-major" required />
+            </div>
+            <div class="form-group">
+                <label for="join-year">Year</label>
+                <select id="join-year" required>
+                    <option value="">Select year</option>
+                    <option value="Freshman">Freshman</option>
+                    <option value="Sophomore">Sophomore</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Senior">Senior</option>
+                    <option value="Graduate">Graduate</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" id="join-cancel-btn" class="btn-secondary">Cancel</button>
+                <button type="submit" class="btn-primary">Register</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <footer class="footer">
     <p>CS5610 Web Development · Northeastern University · Kanad Motiwale & Aarya Patil</p>

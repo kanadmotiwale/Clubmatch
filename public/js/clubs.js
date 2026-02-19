@@ -8,14 +8,47 @@ const addBtn = document.getElementById("add-club-btn");
 const cancelBtn = document.getElementById("cancel-club-btn");
 const filterCategory = document.getElementById("filter-category");
 const filterTime = document.getElementById("filter-time");
+const adminBtn = document.getElementById("admin-btn");
+const detailOverlay = document.getElementById("club-detail-overlay");
+const detailContent = document.getElementById("detail-content");
+const detailClose = document.getElementById("detail-close");
+const joinOverlay = document.getElementById("join-form-overlay");
+const joinForm = document.getElementById("join-form");
+const joinClose = document.getElementById("join-close");
+const joinCancelBtn = document.getElementById("join-cancel-btn");
+
+const ADMIN_PASSWORD = "clubmatch2025";
+let isAdmin = false;
+let allClubs = [];
+
+adminBtn.addEventListener("click", () => {
+    if (isAdmin) {
+        isAdmin = false;
+        adminBtn.classList.remove("active");
+        adminBtn.textContent = "Admin";
+        addBtn.classList.add("hidden");
+        loadClubs();
+    } else {
+        const pwd = prompt("Enter admin password:");
+        if (pwd === ADMIN_PASSWORD) {
+            isAdmin = true;
+            adminBtn.classList.add("active");
+            adminBtn.textContent = "Admin ✓";
+            addBtn.classList.remove("hidden");
+            loadClubs();
+        } else if (pwd !== null) {
+            alert("Incorrect password.");
+        }
+    }
+});
 
 async function loadClubs() {
     try {
         let url = "/clubs?";
         if (filterCategory.value) url += `category=${encodeURIComponent(filterCategory.value)}&`;
         if (filterTime.value) url += `maxTime=${filterTime.value}`;
-        const clubs = await api.get(url);
-        renderClubs(clubs);
+        allClubs = await api.get(url);
+        renderClubs(allClubs);
     } catch (err) {
         list.innerHTML = `<p class="error">Failed to load clubs.</p>`;
     }
@@ -32,18 +65,17 @@ function renderClubs(clubs) {
     <div class="club-card" data-id="${c._id}">
       <div class="club-card-header">
         <span class="badge">${c.category}</span>
+        ${isAdmin ? `
         <div class="card-actions">
           <button class="btn-edit" data-id="${c._id}">Edit</button>
           <button class="btn-delete" data-id="${c._id}">Delete</button>
-        </div>
+        </div>` : ""}
       </div>
       <h3>${c.name}</h3>
       <p>${c.description}</p>
-      <span class="hours">⏱ ${c.weeklyTimeCommitment} hrs/week</span>
-      <div class="club-card-expanded hidden">
-        <p><span>Category:</span> ${c.category}</p>
-        <p><span>Weekly Commitment:</span> ${c.weeklyTimeCommitment} hrs/week</p>
-        <p><span>Description:</span> ${c.description}</p>
+      <div class="club-card-footer">
+        <span class="hours">⏱ ${c.weeklyTimeCommitment} hrs/week</span>
+        <span class="click-hint">Click for details & join →</span>
       </div>
     </div>
   `
@@ -53,25 +85,67 @@ function renderClubs(clubs) {
     list.querySelectorAll(".club-card").forEach((card) => {
         card.addEventListener("click", (e) => {
             if (e.target.classList.contains("btn-edit") || e.target.classList.contains("btn-delete")) return;
-            const expanded = card.querySelector(".club-card-expanded");
-            expanded.classList.toggle("hidden");
+            const club = allClubs.find((c) => c._id === card.dataset.id);
+            if (club) showDetail(club);
         });
     });
 
-    list.querySelectorAll(".btn-edit").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openEdit(btn.dataset.id);
+    if (isAdmin) {
+        list.querySelectorAll(".btn-edit").forEach((btn) => {
+            btn.addEventListener("click", (e) => { e.stopPropagation(); openEdit(btn.dataset.id); });
         });
-    });
+        list.querySelectorAll(".btn-delete").forEach((btn) => {
+            btn.addEventListener("click", (e) => { e.stopPropagation(); deleteClub(btn.dataset.id); });
+        });
+    }
+}
 
-    list.querySelectorAll(".btn-delete").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            deleteClub(btn.dataset.id);
-        });
+function showDetail(club) {
+    detailContent.innerHTML = `
+    <div class="detail-meta">
+      <span class="badge">${club.category}</span>
+      <span class="hours">⏱ ${club.weeklyTimeCommitment} hrs/week</span>
+    </div>
+    <h2>${club.name}</h2>
+    <p>${club.description}</p>
+    <p style="color:#6b7280; font-size:0.875rem;">Interested in joining? Click the button below to register your details.</p>
+    <button class="btn-join" id="open-join-btn" data-name="${club.name}">Join This Club</button>
+  `;
+    detailOverlay.classList.remove("hidden");
+    document.getElementById("open-join-btn").addEventListener("click", () => {
+        document.getElementById("join-club-name").value = club.name;
+        detailOverlay.classList.add("hidden");
+        joinOverlay.classList.remove("hidden");
     });
 }
+
+detailClose.addEventListener("click", () => detailOverlay.classList.add("hidden"));
+detailOverlay.addEventListener("click", (e) => { if (e.target === detailOverlay) detailOverlay.classList.add("hidden"); });
+
+joinClose.addEventListener("click", () => joinOverlay.classList.add("hidden"));
+joinCancelBtn.addEventListener("click", () => joinOverlay.classList.add("hidden"));
+joinOverlay.addEventListener("click", (e) => { if (e.target === joinOverlay) joinOverlay.classList.add("hidden"); });
+
+joinForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = {
+        name: document.getElementById("join-name").value,
+        email: document.getElementById("join-email").value,
+        major: document.getElementById("join-major").value,
+        year: document.getElementById("join-year").value,
+        bio: "",
+        interests: [],
+        joinedClubs: [document.getElementById("join-club-name").value],
+    };
+    try {
+        await api.post("/users", data);
+        joinOverlay.classList.add("hidden");
+        joinForm.reset();
+        alert(`You have successfully registered for ${data.joinedClubs[0]}!`);
+    } catch (err) {
+        alert(err.message);
+    }
+});
 
 function openAdd() {
     formTitle.textContent = "Add Club";
