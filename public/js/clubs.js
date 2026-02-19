@@ -100,7 +100,38 @@ function renderClubs(clubs) {
     }
 }
 
-function showDetail(club) {
+async function showDetail(club) {
+    let membersHTML = "";
+    try {
+        const members = await api.get(`/users/by-club/${encodeURIComponent(club.name)}`);
+        if (members.length > 0) {
+            membersHTML = `
+        <div style="margin-top:1.25rem;">
+          <p style="font-weight:700; font-size:0.875rem; color:#374151; margin-bottom:0.75rem;">
+            👥 Members (${members.length})
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+            ${members.map((m) => `
+              <div style="display:flex; align-items:center; gap:0.5rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:0.4rem 0.75rem;">
+                <div style="background:linear-gradient(135deg,#1e293b,#334155); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">
+                  ${m.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p style="font-size:0.82rem; font-weight:600; color:#111827; margin:0;">${m.name}</p>
+                  <p style="font-size:0.75rem; color:#6b7280; margin:0;">${m.major} · ${m.year}</p>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+        } else {
+            membersHTML = `<p style="margin-top:1rem; font-size:0.875rem; color:#9ca3af;">No members have joined this club yet. Be the first!</p>`;
+        }
+    } catch (err) {
+        membersHTML = "";
+    }
+
     detailContent.innerHTML = `
     <div class="detail-meta">
       <span class="badge">${club.category}</span>
@@ -110,8 +141,10 @@ function showDetail(club) {
     <p>${club.description}</p>
     <p style="color:#6b7280; font-size:0.875rem;">Interested in joining? Click the button below to register your details.</p>
     <button class="btn-join" id="open-join-btn" data-name="${club.name}">Join This Club</button>
+    ${membersHTML}
   `;
     detailOverlay.classList.remove("hidden");
+
     document.getElementById("open-join-btn").addEventListener("click", () => {
         document.getElementById("join-club-name").value = club.name;
         detailOverlay.classList.add("hidden");
@@ -120,11 +153,15 @@ function showDetail(club) {
 }
 
 detailClose.addEventListener("click", () => detailOverlay.classList.add("hidden"));
-detailOverlay.addEventListener("click", (e) => { if (e.target === detailOverlay) detailOverlay.classList.add("hidden"); });
+detailOverlay.addEventListener("click", (e) => {
+    if (e.target === detailOverlay) detailOverlay.classList.add("hidden");
+});
 
 joinClose.addEventListener("click", () => joinOverlay.classList.add("hidden"));
 joinCancelBtn.addEventListener("click", () => joinOverlay.classList.add("hidden"));
-joinOverlay.addEventListener("click", (e) => { if (e.target === joinOverlay) joinOverlay.classList.add("hidden"); });
+joinOverlay.addEventListener("click", (e) => {
+    if (e.target === joinOverlay) joinOverlay.classList.add("hidden");
+});
 
 joinForm.addEventListener("submit", async (e) => {
     e.preventDefault();

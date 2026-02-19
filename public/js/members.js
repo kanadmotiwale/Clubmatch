@@ -3,49 +3,99 @@ import { api } from "./api.js";
 const list = document.getElementById("members-list");
 const searchInput = document.getElementById("search-members");
 const adminBtn = document.getElementById("admin-btn");
+const createProfileBtn = document.getElementById("create-profile-btn");
+const profileFormContainer = document.getElementById("profile-form-container");
+const profileForm = document.getElementById("profile-form");
+const profileFormTitle = document.getElementById("profile-form-title");
+const cancelProfileBtn = document.getElementById("cancel-profile-btn");
+const detailOverlay = document.getElementById("member-detail-overlay");
+const detailContent = document.getElementById("member-detail-content");
+const detailClose = document.getElementById("member-detail-close");
 
 const ADMIN_PASSWORD = "clubmatch2025";
 let isAdmin = false;
+let allMembers = [];
 
 adminBtn.addEventListener("click", () => {
-  if (isAdmin) {
-    isAdmin = false;
-    adminBtn.classList.remove("active");
-    adminBtn.textContent = "Admin";
-    loadMembers();
-  } else {
-    const pwd = prompt("Enter admin password:");
-    if (pwd === ADMIN_PASSWORD) {
-      isAdmin = true;
-      adminBtn.classList.add("active");
-      adminBtn.textContent = "Admin ✓";
-      loadMembers();
-    } else if (pwd !== null) {
-      alert("Incorrect password.");
+    if (isAdmin) {
+        isAdmin = false;
+        adminBtn.classList.remove("active");
+        adminBtn.textContent = "Admin";
+        loadMembers();
+    } else {
+        const pwd = prompt("Enter admin password:");
+        if (pwd === ADMIN_PASSWORD) {
+            isAdmin = true;
+            adminBtn.classList.add("active");
+            adminBtn.textContent = "Admin ✓";
+            loadMembers();
+        } else if (pwd !== null) {
+            alert("Incorrect password.");
+        }
     }
-  }
+});
+
+createProfileBtn.addEventListener("click", () => {
+    profileFormTitle.textContent = "Create My Profile";
+    profileForm.reset();
+    document.getElementById("profile-id").value = "";
+    profileFormContainer.classList.remove("hidden");
+    profileFormContainer.scrollIntoView({ behavior: "smooth" });
+});
+
+cancelProfileBtn.addEventListener("click", () => {
+    profileFormContainer.classList.add("hidden");
+    profileForm.reset();
+});
+
+profileForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = document.getElementById("profile-id").value;
+    const interestsRaw = document.getElementById("profile-interests").value;
+    const clubsRaw = document.getElementById("profile-clubs").value;
+    const data = {
+        name: document.getElementById("profile-name").value,
+        email: document.getElementById("profile-email").value,
+        major: document.getElementById("profile-major").value,
+        year: document.getElementById("profile-year").value,
+        bio: document.getElementById("profile-bio").value,
+        interests: interestsRaw ? interestsRaw.split(",").map((s) => s.trim()).filter(Boolean) : [],
+        joinedClubs: clubsRaw ? clubsRaw.split(",").map((s) => s.trim()).filter(Boolean) : [],
+    };
+    try {
+        if (id) {
+            await api.put(`/users/${id}`, data);
+        } else {
+            await api.post("/users", data);
+        }
+        profileFormContainer.classList.add("hidden");
+        profileForm.reset();
+        loadMembers();
+    } catch (err) {
+        alert(err.message);
+    }
 });
 
 async function loadMembers() {
-  try {
-    const search = searchInput.value.trim();
-    const url = search ? `/users?name=${encodeURIComponent(search)}` : "/users";
-    const members = await api.get(url);
-    renderMembers(members);
-  } catch (err) {
-    list.innerHTML = `<p class="error">Failed to load members.</p>`;
-  }
+    try {
+        const search = searchInput.value.trim();
+        const url = search ? `/users?name=${encodeURIComponent(search)}` : "/users";
+        allMembers = await api.get(url);
+        renderMembers(allMembers);
+    } catch (err) {
+        list.innerHTML = `<p class="error">Failed to load members.</p>`;
+    }
 }
 
 function renderMembers(members) {
-  if (members.length === 0) {
-    list.innerHTML = `<p class="empty">No members found.</p>`;
-    return;
-  }
-  list.innerHTML = members
-    .map(
-      (m) => `
-    <div class="member-card">
+    if (members.length === 0) {
+        list.innerHTML = `<p class="empty">No members found.</p>`;
+        return;
+    }
+    list.innerHTML = members
+        .map(
+            (m) => `
+    <div class="member-card" data-id="${m._id}" style="cursor:pointer;">
       <div class="member-card-header">
         <div class="avatar">${m.name.charAt(0).toUpperCase()}</div>
         <div class="member-info">
@@ -65,69 +115,92 @@ function renderMembers(members) {
         </div>` : ""}
       ${m.joinedClubs && m.joinedClubs.length > 0 ? `
         <p class="joined-clubs">🏛 ${m.joinedClubs.join(", ")}</p>` : ""}
+      <span class="click-hint" style="font-size:0.78rem; color:#f97316; font-weight:500; margin-top:0.25rem;">Click to view full profile →</span>
     </div>
   `
-    )
-    .join("");
+        )
+        .join("");
 
-  if (isAdmin) {
-    list.querySelectorAll(".btn-edit").forEach((btn) => {
-      btn.addEventListener("click", () => openEdit(btn.dataset.id));
+    list.querySelectorAll(".member-card").forEach((card) => {
+        card.addEventListener("click", (e) => {
+            if (e.target.classList.contains("btn-edit") || e.target.classList.contains("btn-delete")) return;
+            const member = allMembers.find((m) => m._id === card.dataset.id);
+            if (member) showProfile(member);
+        });
     });
-    list.querySelectorAll(".btn-delete").forEach((btn) => {
-      btn.addEventListener("click", () => deleteMember(btn.dataset.id));
-    });
-  }
+
+    if (isAdmin) {
+        list.querySelectorAll(".btn-edit").forEach((btn) => {
+            btn.addEventListener("click", (e) => { e.stopPropagation(); openEdit(btn.dataset.id); });
+        });
+        list.querySelectorAll(".btn-delete").forEach((btn) => {
+            btn.addEventListener("click", (e) => { e.stopPropagation(); deleteMember(btn.dataset.id); });
+        });
+    }
 }
 
-async function openEdit(id) {
-  try {
-    const member = await api.get(`/users/${id}`);
-    const name = prompt("Full Name:", member.name);
-    if (name === null) return;
-    const email = prompt("Email:", member.email);
-    if (email === null) return;
-    const major = prompt("Major:", member.major);
-    if (major === null) return;
-    const year = prompt("Year (Freshman/Sophomore/Junior/Senior/Graduate):", member.year);
-    if (year === null) return;
-    const bio = prompt("Bio:", member.bio || "");
-    if (bio === null) return;
-    const interests = prompt("Interests (comma separated):", (member.interests || []).join(", "));
-    if (interests === null) return;
-    const joinedClubs = prompt("Joined Clubs (comma separated):", (member.joinedClubs || []).join(", "));
-    if (joinedClubs === null) return;
+function showProfile(member) {
+    detailContent.innerHTML = `
+    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.25rem;">
+      <div class="avatar" style="width:56px; height:56px; font-size:1.4rem;">${member.name.charAt(0).toUpperCase()}</div>
+      <div>
+        <h2 style="margin-bottom:0.1rem;">${member.name}</h2>
+        <span style="color:#6b7280; font-size:0.9rem;">${member.major} · ${member.year}</span>
+      </div>
+    </div>
+    ${member.bio ? `<p style="margin-bottom:1rem;">${member.bio}</p>` : ""}
+    ${member.interests && member.interests.length > 0 ? `
+      <div style="margin-bottom:1rem;">
+        <p style="font-weight:700; font-size:0.875rem; color:#374151; margin-bottom:0.5rem;">Interests</p>
+        <div class="tags">${member.interests.map((i) => `<span class="tag">${i}</span>`).join("")}</div>
+      </div>` : ""}
+    ${member.joinedClubs && member.joinedClubs.length > 0 ? `
+      <div>
+        <p style="font-weight:700; font-size:0.875rem; color:#374151; margin-bottom:0.5rem;">Clubs</p>
+        <div class="tags">${member.joinedClubs.map((c) => `<span class="tag" style="background:#f0fdf4; color:#16a34a;">${c}</span>`).join("")}</div>
+      </div>` : ""}
+  `;
+    detailOverlay.classList.remove("hidden");
+}
 
-    const data = {
-      name,
-      email,
-      major,
-      year,
-      bio,
-      interests: interests ? interests.split(",").map((s) => s.trim()).filter(Boolean) : [],
-      joinedClubs: joinedClubs ? joinedClubs.split(",").map((s) => s.trim()).filter(Boolean) : [],
-    };
-    await api.put(`/users/${id}`, data);
-    loadMembers();
-  } catch (err) {
-    alert("Failed to update member.");
-  }
+detailClose.addEventListener("click", () => detailOverlay.classList.add("hidden"));
+detailOverlay.addEventListener("click", (e) => {
+    if (e.target === detailOverlay) detailOverlay.classList.add("hidden");
+});
+
+async function openEdit(id) {
+    try {
+        const member = await api.get(`/users/${id}`);
+        profileFormTitle.textContent = "Edit Profile";
+        document.getElementById("profile-id").value = member._id;
+        document.getElementById("profile-name").value = member.name;
+        document.getElementById("profile-email").value = member.email;
+        document.getElementById("profile-major").value = member.major;
+        document.getElementById("profile-year").value = member.year;
+        document.getElementById("profile-bio").value = member.bio || "";
+        document.getElementById("profile-interests").value = (member.interests || []).join(", ");
+        document.getElementById("profile-clubs").value = (member.joinedClubs || []).join(", ");
+        profileFormContainer.classList.remove("hidden");
+        profileFormContainer.scrollIntoView({ behavior: "smooth" });
+    } catch (err) {
+        alert("Failed to load member details.");
+    }
 }
 
 async function deleteMember(id) {
-  if (!confirm("Are you sure you want to delete this profile?")) return;
-  try {
-    await api.delete(`/users/${id}`);
-    loadMembers();
-  } catch (err) {
-    alert("Failed to delete profile.");
-  }
+    if (!confirm("Are you sure you want to delete this profile?")) return;
+    try {
+        await api.delete(`/users/${id}`);
+        loadMembers();
+    } catch (err) {
+        alert("Failed to delete profile.");
+    }
 }
 
 let debounceTimer;
 searchInput.addEventListener("input", () => {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(loadMembers, 400);
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(loadMembers, 400);
 });
 
 loadMembers();
