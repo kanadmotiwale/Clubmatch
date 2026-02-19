@@ -13,19 +13,20 @@
         <a href="/clubs.html">Clubs</a>
         <a href="/membership-logs.html">Membership Logs</a>
         <a href="/members.html">Members</a>
+        <a href="#how-to">How to Use</a>
         <button class="btn-admin" id="admin-btn">Admin</button>
     </div>
 </nav>
 
 <section class="hero">
-    <h1>Discover Your Next Club</h1>
+    <h1>Discover Your Favorite Club</h1>
     <p>Browse student organizations by interest and weekly time commitment</p>
     <div class="hero-search-wrapper">
         <input
                 type="text"
                 id="hero-search"
                 class="hero-search"
-                placeholder="Search clubs..."
+                placeholder="Search clubs by name or category..."
         />
         <button id="hero-search-btn" class="hero-search-btn">&#128269;</button>
     </div>
@@ -40,41 +41,44 @@
     </div>
 </section>
 
-<section class="how-to">
+<section id="how-to" class="how-to">
     <div class="container">
         <h2 class="section-title">How to Use ClubMatch</h2>
         <p class="how-to-subtitle">Everything you need to find your perfect club in 4 simple steps</p>
         <div class="how-to-grid">
             <div class="how-to-card">
                 <span class="how-to-step">STEP 1</span>
+                <div class="how-to-icon">👤</div>
+                <h3>Create Your Profile</h3>
+                <p>Head to the Members page and click Create My Profile to set up your student profile with your major, year, and interests.</p>
+            </div>
+            <div class="how-to-card">
+                <span class="how-to-step">STEP 2</span>
                 <div class="how-to-icon">🔍</div>
                 <h3>Browse Clubs</h3>
                 <p>Use the search bar or category filters to find clubs that match your interests and weekly availability.</p>
             </div>
             <div class="how-to-card">
-                <span class="how-to-step">STEP 2</span>
+                <span class="how-to-step">STEP 3</span>
                 <div class="how-to-icon">📋</div>
                 <h3>Read Experiences</h3>
-                <p>Visit the Membership Logs page to read honest reviews from real students and see average weekly hours.</p>
-            </div>
-            <div class="how-to-card">
-                <span class="how-to-step">STEP 3</span>
-                <div class="how-to-icon">🏛</div>
-                <h3>Join a Club</h3>
-                <p>Click on any club card to see full details and current members. Hit Join This Club to register.</p>
+                <p>Visit the Membership Logs page to read honest reviews from real students and see average weekly hours per club.</p>
             </div>
             <div class="how-to-card">
                 <span class="how-to-step">STEP 4</span>
-                <div class="how-to-icon">👤</div>
-                <h3>Create Your Profile</h3>
-                <p>Head to the Members page and click Create My Profile to set up your student profile and connect with peers.</p>
+                <div class="how-to-icon">🏛</div>
+                <h3>Join a Club</h3>
+                <p>Click on any club card to see full details and current members. Hit Join This Club to register and become a member.</p>
             </div>
         </div>
     </div>
 </section>
 
-<main class="container">
-    <h2 class="section-title">Featured Clubs</h2>
+<main class="container" id="clubs-section">
+    <div class="featured-header">
+        <h2 class="section-title">Featured Clubs</h2>
+        <a href="/clubs.html" class="view-all-btn">View All Clubs →</a>
+    </div>
     <div id="clubs-grid" class="clubs-grid"></div>
 </main>
 
