@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClubMatch</title>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="/" class="nav-logo">🎯 ClubMatch</a>
+      <div class="nav-links">
+        <a href="/clubs.html">Clubs</a>
+        <a href="/membership-logs.html">Membership Logs</a>
+        <a href="/members.html">Members</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1>Discover Your Next Club</h1>
+      <p>Browse student organizations by interest and weekly time commitment</p>
+      <input
+        type="text"
+        id="hero-search"
+        class="hero-search"
+        placeholder="Search clubs..."
+      />
+      <div class="category-filters">
+        <button class="filter-btn" data-category="">All</button>
+        <button class="filter-btn" data-category="Academic">Academic</button>
+        <button class="filter-btn" data-category="Cultural">Cultural</button>
+        <button class="filter-btn" data-category="Sports">Sports</button>
+        <button class="filter-btn" data-category="Professional">Professional</button>
+        <button class="filter-btn" data-category="Arts">Arts</button>
+        <button class="filter-btn" data-category="Service">Service</button>
+      </div>
+    </section>
+
+    <main class="container">
+      <h2 class="section-title">Featured Clubs</h2>
+      <div id="clubs-grid" class="clubs-grid"></div>
+    </main>
+
+    <footer class="footer">
+      <p>CS5610 Web Development · Northeastern University · Kanad Motiwale & Aarya Patil</p>
+    </footer>
+
+    <script type="module" src="/js/index.js"></script>
+  </body>
+</html>
