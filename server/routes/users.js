@@ -30,6 +30,18 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/by-club/:clubName", async (req, res) => {
+  try {
+    const db = getDB();
+    const users = await db.collection("users").find({
+      joinedClubs: req.params.clubName,
+    }).toArray();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch club members" });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
