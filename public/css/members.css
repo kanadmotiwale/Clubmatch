@@ -27,7 +27,7 @@
 }
 
 .avatar {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  background: linear-gradient(135deg, #1e293b, #334155);
   color: white;
   width: 48px;
   height: 48px;
@@ -69,8 +69,8 @@
 }
 
 .tag {
-  background: #ede9fe;
-  color: #4f46e5;
+  background: #fff7ed;
+  color: #f97316;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.75rem;
