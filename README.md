@@ -1,56 +1,76 @@
-# ClubMatch - Discover Student Organizations
+# ClubMatch — Discover Student Organizations
 
-**Authors:** Kanad Motiwale & Aarya Patil  
-**Class:** CS5610 Web Development  
-**Course Link:** [Northeastern University - CS5610](https://johnguerra.co/classes/webDevelopment_fall_2024/)
+**Author:** Kanad Motiwale & Aarya Patil
+**Class:** [CS5610 Web Development — Northeastern University](https://johnguerra.co/classes/webDevelopment_spring_2025/)
+
+---
 
 ## Project Objective
 
-ClubMatch is a centralized discovery and participation analytics platform designed for students to explore academic, cultural, professional, and sports organizations based on interest and weekly time commitment. The platform addresses the challenge of limited club information by separating directory data from structured participation logs, enabling students to make informed involvement decisions with realistic workload expectations.
+Finding the right club at Northeastern isn't as easy as it should be. Between club fairs, Instagram pages, and random GroupMe messages, there's no single place where students can browse organizations, understand what they actually involve, and connect with other members.
+
+ClubMatch is a full-stack web platform that brings all of that into one place. Students can browse and filter clubs by category and weekly time commitment, read and submit honest membership logs from real members, and set up a personal profile to represent themselves in the community. The goal was to build something that a student would actually want to use — not just a CRUD demo.
+
+---
 
 ## Screenshot
 
-![ClubMatch Homepage](screenshot.png)
+![ClubMatch Home Page](screenshot.png)
+
+---
+
+## Tech Stack
+
+- **Backend:** Node.js + Express (ES Modules)
+- **Database:** MongoDB Atlas (native driver, no Mongoose)
+- **Frontend:** Vanilla JavaScript, HTML5, CSS3
+- **Code Quality:** ESLint + Prettier
+- **Deployment:** Render.com
+
+---
 
 ## Features
 
-- **Club Discovery**: Browse and filter student organizations by category and time commitment
-- **Membership Experiences**: Read and share detailed participation logs with benefits and challenges
-- **Time Analytics**: View average weekly hours for specific clubs based on real member data
-- **Full CRUD Operations**: Create, read, update, and delete both clubs and membership logs
-- **Client-Side Rendering**: Dynamic content loading using vanilla JavaScript modules
-- **Responsive Design**: Mobile-friendly interface with modern CSS
+- Browse and filter clubs by category and max weekly hours
+- Submit and read membership logs with benefits, challenges, and weekly hours
+- Average weekly hours stat per club calculated from real member logs
+- Student profile registration with major, year, interests, and joined clubs
+- Full CRUD on all three collections — clubs, membership logs, and users
+- 1100+ seeded records across all collections
+- Client-side rendering using only vanilla JavaScript — no frameworks
 
-## Technology Stack
-
-- **Backend**: Node.js + Express (ES6 modules)
-- **Database**: MongoDB (native driver, no Mongoose)
-- **Frontend**: Vanilla JavaScript (client-side rendering), HTML5, CSS3
-- **Code Quality**: ESLint, Prettier
+---
 
 ## Project Structure
 
 ```
 clubmatch/
 ├── server/
-│   ├── server.js              # Express server
-│   ├── db.js                  # MongoDB connection module
+│   ├── server.js
+│   ├── db.js
 │   └── routes/
-│       ├── clubs.js           # Club CRUD operations (Kanad)
-│       └── membership-logs.js # Membership log CRUD (Aarya)
+│       ├── clubs.js
+│       ├── membership-logs.js
+│       └── users.js
 ├── public/
 │   ├── index.html
 │   ├── clubs.html
 │   ├── membership-logs.html
+│   ├── members.html
 │   ├── css/
 │   │   ├── main.css
 │   │   ├── clubs.css
-│   │   └── logs.css
+│   │   ├── logs.css
+│   │   └── members.css
 │   └── js/
-│       ├── api.js             # API helper module
-│       ├── clubs.js           # Clubs page logic
-│       └── logs.js            # Logs page logic
-├── .env
+│       ├── api.js
+│       ├── index.js
+│       ├── clubs.js
+│       ├── logs.js
+│       └── members.js
+├── scripts/
+│   └── seed.js
+├── .env.example
 ├── .eslintrc.json
 ├── .prettierrc
 ├── package.json
@@ -58,125 +78,72 @@ clubmatch/
 └── LICENSE
 ```
 
+---
+
 ## Instructions to Build
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- MongoDB Atlas account (or local MongoDB instance)
+- Node.js v18 or higher
+- A MongoDB Atlas account (free tier is fine)
 
-### Setup Steps
+### Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd clubmatch
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-
-   Create a `.env` file in the root directory:
-   ```
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/clubmatch?retryWrites=true&w=majority
-   PORT=3000
-   ```
-
-   Replace with your actual MongoDB connection string.
-
-4. **Run the application**
-
-   Development mode (with auto-restart):
-   ```bash
-   npm run dev
-   ```
-
-   Production mode:
-   ```bash
-   npm start
-   ```
-
-5. **Access the application**
-
-   Open your browser and navigate to:
-   ```
-   http://localhost:3000
-   ```
-
-### Code Quality Commands
+1. Clone the repository
 
 ```bash
-# Run ESLint
-npm run lint
-
-# Format code with Prettier
-npm run format
+git clone <repository-url>
+cd clubmatch
 ```
 
-## MongoDB Collections
+2. Install dependencies
 
-### clubs
-```javascript
-{
-  _id: ObjectId,
-  name; String,
-  category; String, // Academic, Cultural, Professional, Sports, Arts, Service
-  description; String,
-  weeklyTimeCommitment; Number, // hours per week
-  createdAt; Date,
-  updatedAt; Date (optional)
-}
+```bash
+npm install
 ```
 
-### membership_logs
-```javascript
-{
-  _id: ObjectId,
-  clubName; String,
-  weeklyHours; Number,
-  benefits; String,
-  challenges; String,
-  createdAt;Date,
-  updatedAt; Date (optional)
-}
+3. Set up environment variables
+
+Create a `.env` file in the root directory using `.env.example` as a reference:
+
+```
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/clubmatch?retryWrites=true&w=majority
+PORT=3000
 ```
 
-## API Endpoints
+Replace the URI with your actual MongoDB Atlas connection string.
 
-### Clubs (Kanad)
-- `POST /api/clubs` - Create a new club
-- `GET /api/clubs` - Get all clubs (with optional filters: category, maxTime)
-- `GET /api/clubs/:id` - Get single club by ID
-- `PUT /api/clubs/:id` - Update a club
-- `DELETE /api/clubs/:id` - Delete a club
+4. Seed the database
 
-### Membership Logs (Aarya)
-- `POST /api/membership-logs` - Create a new log
-- `GET /api/membership-logs` - Get all logs (with optional filter: clubName)
-- `GET /api/membership-logs/:id` - Get single log by ID
-- `GET /api/membership-logs/stats/:clubName` - Get average hours for a club
-- `PUT /api/membership-logs/:id` - Update a log
-- `DELETE /api/membership-logs/:id` - Delete a log
+```bash
+npm run seed
+```
 
-## Deployment
+This inserts 1100 records across the clubs, membership logs, and users collections.
 
-The application can be deployed to:
-- [Render](https://render.com)
-- [Railway](https://railway.app)
-- [Heroku](https://heroku.com)
+5. Start the app
 
-Make sure to set environment variables in your hosting platform's dashboard.
+```bash
+npm run dev
+```
 
+Then open `http://localhost:3000` in your browser.
+
+### Other Commands
+
+```bash
+npm run lint      # Run ESLint
+npm run format    # Format code with Prettier
+```
+
+---
+
+## Video Demo
+
+[Watch the demo here](<video-link>)
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Course Instructor: John Alexis Guerra Gomez
-- Northeastern University - Khoury College of Computer Sciences
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
