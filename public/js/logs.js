@@ -40,7 +40,7 @@ function renderLogs(logs) {
         list.innerHTML = `<p class="empty">No logs found.</p>`;
         return;
     }
-    list.innerHTML = logs
+    list.innerHTML = `<div class="logs-grid">${logs
         .map(
             (l) => `
     <div class="log-card">
@@ -57,7 +57,7 @@ function renderLogs(logs) {
     </div>
   `
         )
-        .join("");
+        .join("")}</div>`;
 
     list.querySelectorAll(".btn-edit").forEach((btn) => {
         btn.addEventListener("click", () => openEdit(btn.dataset.id));
@@ -72,6 +72,7 @@ function openAdd() {
     form.reset();
     document.getElementById("log-id").value = "";
     formContainer.classList.remove("hidden");
+    formContainer.scrollIntoView({ behavior: "smooth" });
 }
 
 async function openEdit(id) {
@@ -84,6 +85,7 @@ async function openEdit(id) {
         document.getElementById("log-benefits").value = log.benefits;
         document.getElementById("log-challenges").value = log.challenges;
         formContainer.classList.remove("hidden");
+        formContainer.scrollIntoView({ behavior: "smooth" });
     } catch (err) {
         alert("Failed to load log details.");
     }

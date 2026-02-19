@@ -29,7 +29,7 @@ function renderClubs(clubs) {
     list.innerHTML = clubs
         .map(
             (c) => `
-    <div class="club-card">
+    <div class="club-card" data-id="${c._id}">
       <div class="club-card-header">
         <span class="badge">${c.category}</span>
         <div class="card-actions">
@@ -40,16 +40,36 @@ function renderClubs(clubs) {
       <h3>${c.name}</h3>
       <p>${c.description}</p>
       <span class="hours">⏱ ${c.weeklyTimeCommitment} hrs/week</span>
+      <div class="club-card-expanded hidden">
+        <p><span>Category:</span> ${c.category}</p>
+        <p><span>Weekly Commitment:</span> ${c.weeklyTimeCommitment} hrs/week</p>
+        <p><span>Description:</span> ${c.description}</p>
+      </div>
     </div>
   `
         )
         .join("");
 
-    list.querySelectorAll(".btn-edit").forEach((btn) => {
-        btn.addEventListener("click", () => openEdit(btn.dataset.id));
+    list.querySelectorAll(".club-card").forEach((card) => {
+        card.addEventListener("click", (e) => {
+            if (e.target.classList.contains("btn-edit") || e.target.classList.contains("btn-delete")) return;
+            const expanded = card.querySelector(".club-card-expanded");
+            expanded.classList.toggle("hidden");
+        });
     });
+
+    list.querySelectorAll(".btn-edit").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openEdit(btn.dataset.id);
+        });
+    });
+
     list.querySelectorAll(".btn-delete").forEach((btn) => {
-        btn.addEventListener("click", () => deleteClub(btn.dataset.id));
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            deleteClub(btn.dataset.id);
+        });
     });
 }
 
@@ -58,6 +78,7 @@ function openAdd() {
     form.reset();
     document.getElementById("club-id").value = "";
     formContainer.classList.remove("hidden");
+    formContainer.scrollIntoView({ behavior: "smooth" });
 }
 
 async function openEdit(id) {
@@ -70,6 +91,7 @@ async function openEdit(id) {
         document.getElementById("club-description").value = club.description;
         document.getElementById("club-hours").value = club.weeklyTimeCommitment;
         formContainer.classList.remove("hidden");
+        formContainer.scrollIntoView({ behavior: "smooth" });
     } catch (err) {
         alert("Failed to load club details.");
     }
