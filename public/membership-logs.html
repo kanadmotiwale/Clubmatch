@@ -10,17 +10,18 @@
   <body>
     <nav class="navbar">
       <a href="/" class="nav-logo">ClubMatch</a>
-      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
       <div class="nav-links">
         <a href="/">Home</a>
         <a href="/clubs.html">Clubs</a>
         <a href="/membership-logs.html" class="active">Membership Logs</a>
         <a href="/members.html">Members</a>
         <button class="btn-admin" id="admin-btn">Admin</button>
+        <a href="/login.html" id="nav-login-link" class="btn-auth-nav hidden"
+          >Log In</a
+        >
+        <button id="nav-user-name" class="btn-auth-nav hidden">
+          👤 User ▾
+        </button>
       </div>
     </nav>
 
@@ -109,11 +110,6 @@
       <p>CS5610 Web Development · Northeastern University</p>
     </footer>
 
-    <script>
-      document.getElementById("hamburger-btn").addEventListener("click", () => {
-        document.querySelector(".nav-links").classList.toggle("open");
-      });
-    </script>
     <script type="module" src="/js/logs.js"></script>
   </body>
 </html>

@@ -13,7 +13,6 @@ const detailOverlay = document.getElementById("member-detail-overlay");
 const detailContent = document.getElementById("member-detail-content");
 const detailClose = document.getElementById("member-detail-close");
 const tabBtns = document.querySelectorAll(".tab-btn");
-
 const adminModal = document.getElementById("admin-modal");
 const adminPasswordInput = document.getElementById("admin-password-input");
 const adminError = document.getElementById("admin-error");
@@ -25,6 +24,8 @@ let isAdmin = false;
 let allMembers = [];
 let activeTab = "all";
 
+setupAuthNav();
+
 adminBtn.addEventListener("click", () => {
   if (isAdmin) {
     isAdmin = false;
@@ -32,16 +33,33 @@ adminBtn.addEventListener("click", () => {
     adminBtn.textContent = "Admin";
     renderMembers(getFilteredMembers());
   } else {
-    const pwd = prompt("Enter admin password:");
-    if (pwd === ADMIN_PASSWORD) {
-      isAdmin = true;
-      adminBtn.classList.add("active");
-      adminBtn.textContent = "Admin ✓";
-      renderMembers(getFilteredMembers());
-    } else if (pwd !== null) {
-      alert("Incorrect password.");
-    }
+    adminPasswordInput.value = "";
+    adminError.classList.add("hidden");
+    adminModal.classList.remove("hidden");
+    adminPasswordInput.focus();
   }
+});
+
+adminModalCancel.addEventListener("click", () =>
+  adminModal.classList.add("hidden")
+);
+
+adminModalSubmit.addEventListener("click", () => {
+  if (adminPasswordInput.value === ADMIN_PASSWORD) {
+    isAdmin = true;
+    adminBtn.classList.add("active");
+    adminBtn.textContent = "Admin ✓";
+    adminModal.classList.add("hidden");
+    renderMembers(getFilteredMembers());
+  } else {
+    adminError.classList.remove("hidden");
+    adminPasswordInput.value = "";
+    adminPasswordInput.focus();
+  }
+});
+
+adminPasswordInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") adminModalSubmit.click();
 });
 
 tabBtns.forEach((btn) => {
@@ -56,7 +74,6 @@ tabBtns.forEach((btn) => {
 function getFilteredMembers() {
   const search = searchInput.value.trim().toLowerCase();
   let filtered = allMembers;
-
   if (activeTab === "members") {
     filtered = allMembers.filter(
       (m) => m.joinedClubs && m.joinedClubs.length > 0
@@ -66,7 +83,6 @@ function getFilteredMembers() {
       (m) => !m.joinedClubs || m.joinedClubs.length === 0
     );
   }
-
   if (search) {
     filtered = filtered.filter(
       (m) =>
@@ -75,24 +91,40 @@ function getFilteredMembers() {
           m.interests.some((i) => i.toLowerCase().includes(search)))
     );
   }
-
   return filtered;
 }
 
 createProfileBtn.addEventListener("click", () => {
-  profileFormTitle.textContent = "Create My Profile";
+  const user = getUser();
+  profileFormTitle.textContent = user ? "Edit My Profile" : "Create My Profile";
   profileForm.reset();
   document.getElementById("profile-id").value = "";
-  const user = getUser();
+
   if (user) {
-    document.getElementById("profile-name").value = user.name || "";
-    document.getElementById("profile-email").value = user.email || "";
-    document.getElementById("profile-major").value = user.major || "";
-    document.getElementById("profile-year").value = user.year || "";
-    document.getElementById("profile-bio").value = user.bio || "";
-    document.getElementById("profile-interests").value = (
-      user.interests || []
-    ).join(", ");
+    const existing = allMembers.find((m) => m.email === user.email);
+    if (existing) {
+      document.getElementById("profile-id").value = existing._id;
+      document.getElementById("profile-name").value = existing.name || "";
+      document.getElementById("profile-email").value = existing.email || "";
+      document.getElementById("profile-major").value = existing.major || "";
+      document.getElementById("profile-year").value = existing.year || "";
+      document.getElementById("profile-bio").value = existing.bio || "";
+      document.getElementById("profile-interests").value = (
+        existing.interests || []
+      ).join(", ");
+      document.getElementById("profile-clubs").value = (
+        existing.joinedClubs || []
+      ).join(", ");
+    } else {
+      document.getElementById("profile-name").value = user.name || "";
+      document.getElementById("profile-email").value = user.email || "";
+      document.getElementById("profile-major").value = user.major || "";
+      document.getElementById("profile-year").value = user.year || "";
+      document.getElementById("profile-bio").value = user.bio || "";
+      document.getElementById("profile-interests").value = (
+        user.interests || []
+      ).join(", ");
+    }
   }
   profileFormContainer.classList.remove("hidden");
   profileFormContainer.scrollIntoView({ behavior: "smooth" });
@@ -136,7 +168,6 @@ profileForm.addEventListener("submit", async (e) => {
     profileFormContainer.classList.add("hidden");
     profileForm.reset();
     await loadMembers();
-    setupAuthNav();
   } catch (err) {
     alert(err.message);
   }
@@ -145,6 +176,12 @@ profileForm.addEventListener("submit", async (e) => {
 async function loadMembers() {
   try {
     allMembers = await api.get("/users");
+    const user = getUser();
+    if (user) {
+      createProfileBtn.textContent = "✏️ Edit My Profile";
+    } else {
+      createProfileBtn.textContent = "+ Create My Profile";
+    }
     renderMembers(getFilteredMembers());
   } catch (err) {
     list.innerHTML = `<p class="error">Failed to load members.</p>`;
@@ -156,6 +193,7 @@ function renderMembers(members) {
     list.innerHTML = `<p class="empty">No ${activeTab === "members" ? "club members" : activeTab === "students" ? "students without clubs" : "members"} found.</p>`;
     return;
   }
+  const user = getUser();
   list.innerHTML = members
     .map(
       (m) => `
@@ -171,11 +209,11 @@ function renderMembers(members) {
             ${m.joinedClubs && m.joinedClubs.length > 0 ? "Member" : "Student"}
           </span>
           ${
-            isAdmin
+            isAdmin || (user && user.email === m.email)
               ? `
           <div class="card-actions">
             <button class="btn-edit" data-id="${m._id}">Edit</button>
-            <button class="btn-delete" data-id="${m._id}">Delete</button>
+            ${isAdmin ? `<button class="btn-delete" data-id="${m._id}">Delete</button>` : ""}
           </div>`
               : ""
           }
@@ -214,13 +252,14 @@ function renderMembers(members) {
     });
   });
 
-  if (isAdmin) {
-    list.querySelectorAll(".btn-edit").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        openEdit(btn.dataset.id);
-      });
+  list.querySelectorAll(".btn-edit").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openEdit(btn.dataset.id);
     });
+  });
+
+  if (isAdmin) {
     list.querySelectorAll(".btn-delete").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();

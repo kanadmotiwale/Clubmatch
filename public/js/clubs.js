@@ -18,16 +18,17 @@ const joinOverlay = document.getElementById("join-form-overlay");
 const joinForm = document.getElementById("join-form");
 const joinClose = document.getElementById("join-close");
 const joinCancelBtn = document.getElementById("join-cancel-btn");
-
-const ADMIN_PASSWORD = "clubmatch2025";
-let isAdmin = false;
-let allClubs = [];
-
 const adminModal = document.getElementById("admin-modal");
 const adminPasswordInput = document.getElementById("admin-password-input");
 const adminError = document.getElementById("admin-error");
 const adminModalCancel = document.getElementById("admin-modal-cancel");
 const adminModalSubmit = document.getElementById("admin-modal-submit");
+
+const ADMIN_PASSWORD = "clubmatch2025";
+let isAdmin = false;
+let allClubs = [];
+
+setupAuthNav();
 
 adminBtn.addEventListener("click", () => {
   if (isAdmin) {
@@ -44,9 +45,9 @@ adminBtn.addEventListener("click", () => {
   }
 });
 
-adminModalCancel.addEventListener("click", () => {
-  adminModal.classList.add("hidden");
-});
+adminModalCancel.addEventListener("click", () =>
+  adminModal.classList.add("hidden")
+);
 
 adminModalSubmit.addEventListener("click", () => {
   if (adminPasswordInput.value === ADMIN_PASSWORD) {
@@ -194,7 +195,7 @@ async function showDetail(club) {
     </div>
     <h2>${club.name}</h2>
     <p>${club.description}</p>
-    <p style="color:#6b7280; font-size:0.875rem;">Interested in joining? Click the button below to register your details.</p>
+    <p style="color:#6b7280; font-size:0.875rem;">Interested in joining? Click the button below to register.</p>
     <button class="btn-join" id="open-join-btn" data-name="${club.name}">Join This Club</button>
     ${membersHTML}
   `;

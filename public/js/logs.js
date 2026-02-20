@@ -13,7 +13,6 @@ const statsClubName = document.getElementById("stats-club-name");
 const statsAvg = document.getElementById("stats-avg");
 const adminBtn = document.getElementById("admin-btn");
 const tabBtns = document.querySelectorAll(".tab-btn");
-
 const adminModal = document.getElementById("admin-modal");
 const adminPasswordInput = document.getElementById("admin-password-input");
 const adminError = document.getElementById("admin-error");
@@ -25,23 +24,44 @@ let isAdmin = false;
 let activeTab = "club";
 let allLogs = [];
 
+setupAuthNav();
+
 adminBtn.addEventListener("click", () => {
   if (isAdmin) {
     isAdmin = false;
     adminBtn.classList.remove("active");
     adminBtn.textContent = "Admin";
+    addBtn.classList.add("hidden");
     renderLogs(allLogs);
   } else {
-    const pwd = prompt("Enter admin password:");
-    if (pwd === ADMIN_PASSWORD) {
-      isAdmin = true;
-      adminBtn.classList.add("active");
-      adminBtn.textContent = "Admin ✓";
-      renderLogs(allLogs);
-    } else if (pwd !== null) {
-      alert("Incorrect password.");
-    }
+    adminPasswordInput.value = "";
+    adminError.classList.add("hidden");
+    adminModal.classList.remove("hidden");
+    adminPasswordInput.focus();
   }
+});
+
+adminModalCancel.addEventListener("click", () =>
+  adminModal.classList.add("hidden")
+);
+
+adminModalSubmit.addEventListener("click", () => {
+  if (adminPasswordInput.value === ADMIN_PASSWORD) {
+    isAdmin = true;
+    adminBtn.classList.add("active");
+    adminBtn.textContent = "Admin ✓";
+    addBtn.classList.remove("hidden");
+    adminModal.classList.add("hidden");
+    renderLogs(allLogs);
+  } else {
+    adminError.classList.remove("hidden");
+    adminPasswordInput.value = "";
+    adminPasswordInput.focus();
+  }
+});
+
+adminPasswordInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") adminModalSubmit.click();
 });
 
 tabBtns.forEach((btn) => {
@@ -56,7 +76,6 @@ tabBtns.forEach((btn) => {
     filterClub.value = "";
     statsBanner.classList.add("hidden");
     loadLogs();
-    setupAuthNav();
   });
 });
 
@@ -148,7 +167,6 @@ function renderLogs(logs) {
       if (!grouped[l.clubName]) grouped[l.clubName] = [];
       grouped[l.clubName].push(l);
     });
-
     list.innerHTML = Object.entries(grouped)
       .map(
         ([clubName, clubLogs]) => `
@@ -166,8 +184,7 @@ function renderLogs(logs) {
                 <span class="hours">⏱ ${l.weeklyHours} hrs/week</span>
                 ${
                   isAdmin
-                    ? `
-                <div class="card-actions">
+                    ? `<div class="card-actions">
                   <button class="btn-edit" data-id="${l._id}">Edit</button>
                   <button class="btn-delete" data-id="${l._id}">Delete</button>
                 </div>`
@@ -204,8 +221,7 @@ function renderLogs(logs) {
           </div>
           ${
             isAdmin
-              ? `
-          <div class="card-actions">
+              ? `<div class="card-actions">
             <button class="btn-edit" data-id="${l._id}">Edit</button>
             <button class="btn-delete" data-id="${l._id}">Delete</button>
           </div>`

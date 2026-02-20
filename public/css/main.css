@@ -25,6 +25,7 @@ body {
   top: 0;
   z-index: 100;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  overflow: visible;
 }
 
 .nav-logo {
@@ -79,6 +80,10 @@ body {
   background: #f97316;
   color: white;
   border-color: #f97316;
+}
+
+.auth-nav-wrapper {
+  position: relative;
 }
 
 .btn-auth-nav {

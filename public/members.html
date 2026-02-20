@@ -10,17 +10,18 @@
   <body>
     <nav class="navbar">
       <a href="/" class="nav-logo">ClubMatch</a>
-      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
       <div class="nav-links">
         <a href="/">Home</a>
         <a href="/clubs.html">Clubs</a>
         <a href="/membership-logs.html">Membership Logs</a>
         <a href="/members.html" class="active">Members</a>
         <button class="btn-admin" id="admin-btn">Admin</button>
+        <a href="/login.html" id="nav-login-link" class="btn-auth-nav hidden"
+          >Log In</a
+        >
+        <button id="nav-user-name" class="btn-auth-nav hidden">
+          👤 User ▾
+        </button>
       </div>
     </nav>
 
@@ -109,13 +110,6 @@
       <div id="members-list" class="members-grid"></div>
     </main>
 
-    <div id="member-detail-overlay" class="detail-overlay hidden">
-      <div class="detail-box">
-        <button class="detail-close" id="member-detail-close">✕</button>
-        <div id="member-detail-content"></div>
-      </div>
-    </div>
-
     <div id="admin-modal" class="admin-modal-overlay hidden">
       <div class="admin-modal-box">
         <h2>Admin Access</h2>
@@ -135,15 +129,17 @@
       </div>
     </div>
 
+    <div id="member-detail-overlay" class="detail-overlay hidden">
+      <div class="detail-box">
+        <button class="detail-close" id="member-detail-close">✕</button>
+        <div id="member-detail-content"></div>
+      </div>
+    </div>
+
     <footer class="footer">
       <p>CS5610 Web Development · Northeastern University</p>
     </footer>
 
-    <script>
-      document.getElementById("hamburger-btn").addEventListener("click", () => {
-        document.querySelector(".nav-links").classList.toggle("open");
-      });
-    </script>
     <script type="module" src="/js/members.js"></script>
   </body>
 </html>
