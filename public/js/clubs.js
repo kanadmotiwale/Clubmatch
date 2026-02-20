@@ -22,6 +22,12 @@ const ADMIN_PASSWORD = "clubmatch2025";
 let isAdmin = false;
 let allClubs = [];
 
+const adminModal = document.getElementById("admin-modal");
+const adminPasswordInput = document.getElementById("admin-password-input");
+const adminError = document.getElementById("admin-error");
+const adminModalCancel = document.getElementById("admin-modal-cancel");
+const adminModalSubmit = document.getElementById("admin-modal-submit");
+
 adminBtn.addEventListener("click", () => {
     if (isAdmin) {
         isAdmin = false;
@@ -30,17 +36,34 @@ adminBtn.addEventListener("click", () => {
         addBtn.classList.add("hidden");
         loadClubs();
     } else {
-        const pwd = prompt("Enter admin password:");
-        if (pwd === ADMIN_PASSWORD) {
-            isAdmin = true;
-            adminBtn.classList.add("active");
-            adminBtn.textContent = "Admin ✓";
-            addBtn.classList.remove("hidden");
-            loadClubs();
-        } else if (pwd !== null) {
-            alert("Incorrect password.");
-        }
+        adminPasswordInput.value = "";
+        adminError.classList.add("hidden");
+        adminModal.classList.remove("hidden");
+        adminPasswordInput.focus();
     }
+});
+
+adminModalCancel.addEventListener("click", () => {
+    adminModal.classList.add("hidden");
+});
+
+adminModalSubmit.addEventListener("click", () => {
+    if (adminPasswordInput.value === ADMIN_PASSWORD) {
+        isAdmin = true;
+        adminBtn.classList.add("active");
+        adminBtn.textContent = "Admin ✓";
+        addBtn.classList.remove("hidden");
+        adminModal.classList.add("hidden");
+        loadClubs();
+    } else {
+        adminError.classList.remove("hidden");
+        adminPasswordInput.value = "";
+        adminPasswordInput.focus();
+    }
+});
+
+adminPasswordInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") adminModalSubmit.click();
 });
 
 async function loadClubs() {

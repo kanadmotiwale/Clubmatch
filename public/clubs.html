@@ -83,6 +83,19 @@
     <div id="clubs-list" class="clubs-grid"></div>
 </main>
 
+<div id="admin-modal" class="admin-modal-overlay hidden">
+    <div class="admin-modal-box">
+        <h2>Admin Access</h2>
+        <p>Enter the admin password to manage clubs.</p>
+        <input type="password" id="admin-password-input" placeholder="Password" />
+        <div id="admin-error" class="admin-error hidden">Incorrect password. Try again.</div>
+        <div class="admin-modal-actions">
+            <button id="admin-modal-cancel" class="btn-secondary">Cancel</button>
+            <button id="admin-modal-submit" class="btn-primary">Login</button>
+        </div>
+    </div>
+</div>
+
 <div id="club-detail-overlay" class="detail-overlay hidden">
     <div class="detail-box">
         <button class="detail-close" id="detail-close">✕</button>

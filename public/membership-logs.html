@@ -73,6 +73,19 @@
     <div id="logs-list"></div>
 </main>
 
+<div id="admin-modal" class="admin-modal-overlay hidden">
+    <div class="admin-modal-box">
+        <h2>Admin Access</h2>
+        <p>Enter the admin password to manage membership logs.</p>
+        <input type="password" id="admin-password-input" placeholder="Password" />
+        <div id="admin-error" class="admin-error hidden">Incorrect password. Try again.</div>
+        <div class="admin-modal-actions">
+            <button id="admin-modal-cancel" class="btn-secondary">Cancel</button>
+            <button id="admin-modal-submit" class="btn-primary">Login</button>
+        </div>
+    </div>
+</div>
+
 <footer class="footer">
     <p>CS5610 Web Development · Northeastern University · Kanad Motiwale & Aarya Patil</p>
 </footer>
