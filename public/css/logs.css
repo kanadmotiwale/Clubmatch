@@ -104,14 +104,6 @@
     font-style: italic;
 }
 
-.log-card-club {
-    cursor: pointer;
-}
-
-.log-card-member {
-    cursor: default;
-}
-
 .log-avatar {
     background: linear-gradient(135deg, #1e293b, #334155);
     color: white;
@@ -124,6 +116,17 @@
     font-size: 0.95rem;
     font-weight: 800;
     flex-shrink: 0;
+}
+
+.log-club-tag {
+    display: inline-block;
+    background: #fff7ed;
+    color: #f97316;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 20px;
+    width: fit-content;
 }
 
 .btn-view-details {
@@ -141,15 +144,6 @@
 
 .btn-view-details:hover {
     color: #ea6c0a;
-}
-display: inline-block;
-background: #fff7ed;
-color: #f97316;
-font-size: 0.78rem;
-font-weight: 700;
-padding: 0.2rem 0.65rem;
-border-radius: 20px;
-width: fit-content;
 }
 
 .label-benefits {
