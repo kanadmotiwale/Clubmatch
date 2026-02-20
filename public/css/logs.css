@@ -41,6 +41,7 @@
   margin-bottom: 1rem;
   padding-bottom: 0.6rem;
   border-bottom: 2px solid #f3f4f6;
+  flex-wrap: wrap;
 }
 
 .log-group-title {
@@ -60,7 +61,7 @@
 
 .logs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 1.25rem;
 }
 
@@ -86,6 +87,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .log-card h3 {
@@ -167,4 +170,25 @@
   font-weight: 600;
   margin-bottom: 1.75rem;
   border: 1px solid #fed7aa;
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    width: 100%;
+  }
+
+  .tab-btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .logs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .log-card {
+    padding: 1.25rem;
+  }
 }

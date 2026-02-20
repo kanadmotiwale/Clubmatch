@@ -10,6 +10,11 @@
   <body>
     <nav class="navbar">
       <a href="/" class="nav-logo">ClubMatch</a>
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <div class="nav-links">
         <a href="/">Home</a>
         <a href="/clubs.html" class="active">Clubs</a>
@@ -164,6 +169,11 @@
       </p>
     </footer>
 
+    <script>
+      document.getElementById("hamburger-btn").addEventListener("click", () => {
+        document.querySelector(".nav-links").classList.toggle("open");
+      });
+    </script>
     <script type="module" src="/js/clubs.js"></script>
   </body>
 </html>

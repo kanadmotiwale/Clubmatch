@@ -16,8 +16,8 @@ body {
 
 .navbar {
   background: #0f172a;
-  padding: 0 3rem;
-  height: 75px;
+  padding: 0 2rem;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -29,7 +29,7 @@ body {
 
 .nav-logo {
   color: white;
-  font-size: 1.9rem;
+  font-size: 1.6rem;
   font-weight: 800;
   text-decoration: none;
   letter-spacing: -0.5px;
@@ -37,14 +37,14 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   align-items: center;
 }
 
 .nav-links a {
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   transition: color 0.2s;
   padding-bottom: 4px;
@@ -81,6 +81,29 @@ body {
   border-color: #f97316;
 }
 
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.nav-menu-open .nav-links {
+  display: flex;
+}
+
 .container {
   max-width: 1400px;
   margin: 0 auto;
@@ -94,6 +117,8 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .page-header h1 {
@@ -122,7 +147,11 @@ body {
 
 .filters input {
   flex: 1;
-  min-width: 220px;
+  min-width: 200px;
+}
+
+.filters select {
+  min-width: 140px;
 }
 
 .filters select:focus,
@@ -189,6 +218,7 @@ body {
   gap: 0.75rem;
   justify-content: flex-end;
   margin-top: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .btn-primary {
@@ -305,7 +335,7 @@ body {
 
 .clubs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
@@ -338,7 +368,7 @@ body {
 .hero {
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   color: white;
-  padding: 4rem 3rem;
+  padding: 4rem 2rem;
   text-align: center;
 }
 
@@ -429,6 +459,8 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .featured-header .section-title {
@@ -569,13 +601,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .detail-box {
   background: white;
   border-radius: 14px;
-  padding: 2.5rem;
+  padding: 2rem;
   max-width: 560px;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -585,7 +617,7 @@ body {
 }
 
 .detail-box h2 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
   color: #111827;
@@ -630,7 +662,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .admin-modal-box {
@@ -686,4 +718,174 @@ body {
   gap: 0.75rem;
   justify-content: flex-end;
   margin-top: 0.5rem;
+}
+
+/* ─── Tablet (max 1024px) ─── */
+@media (max-width: 1024px) {
+  .container {
+    padding: 2rem 2rem;
+  }
+
+  .how-to-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .clubs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+/* ─── Mobile (max 768px) ─── */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 1.25rem;
+    height: 60px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: #0f172a;
+    padding: 0.75rem 1.25rem 1rem;
+    z-index: 99;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 0.6rem 0;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 1rem;
+  }
+
+  .nav-links a:last-of-type {
+    border-bottom: none;
+  }
+
+  .btn-admin {
+    margin-top: 0.5rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .hero {
+    padding: 2.5rem 1.25rem;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+  }
+
+  .hero-search-wrapper {
+    max-width: 100%;
+  }
+
+  .how-to-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .how-to {
+    padding: 2.5rem 0;
+  }
+
+  .clubs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .filters select,
+  .filters input {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .form-container {
+    padding: 1.25rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .detail-box {
+    padding: 1.5rem;
+    max-height: 85vh;
+  }
+
+  .admin-modal-box {
+    padding: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  .featured-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer {
+    font-size: 0.8rem;
+    padding: 1rem;
+  }
+}
+
+/* ─── Small Mobile (max 480px) ─── */
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .nav-logo {
+    font-size: 1.3rem;
+  }
+
+  .category-filters {
+    gap: 0.4rem;
+  }
+
+  .filter-btn {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.8rem;
+  }
 }
