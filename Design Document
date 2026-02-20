@@ -1,0 +1,112 @@
+ClubMatch — Design Document
+Course: CS5610 Web Development — Northeastern University
+Authors: Kanad Motiwale and Aarya Patil
+Date: February 2026
+
+
+Project Description
+
+Every semester at Northeastern, students go through the same cycle. They show up to the involvement fair, grab a bunch of flyers, follow a few Instagram pages, and still have no real idea what joining a club actually looks like day to day. How many hours does it really take? Is it worth it for someone with a packed schedule? There is no good answer to these questions anywhere, and that is the problem we wanted to solve.
+ClubMatch is a web platform where students can browse clubs, read honest participation logs from people who have actually been in those clubs, and set up a personal profile to represent themselves in the community. The idea is simple — put all the information in one place and let students make better decisions.
+The app has three independent parts. The Club Directory, owned by Kanad, is a browsable and filterable list of student organizations with key information like category and weekly time commitment. The Membership Logs, also owned by Kanad, are structured entries from real members sharing how many hours they actually spent and what they got out of it. The Student Profiles section, owned by Aarya, lets students create personal profiles listing their major, year, interests, and clubs they have joined.
+All three run on the same Express backend and MongoDB database, but each collection is completely independent with no references or foreign keys between them.
+Work Distribution
+Kanad Motiwale handled the full CRUD stack for the clubs collection and the membership logs collection, including an endpoint that calculates average weekly hours per club across all submitted logs.
+Aarya Patil handled the full CRUD stack for the users collection, covering everything from profile creation to search and deletion.
+Technology Stack
+The backend is Node.js and Express using ES Modules only. The database is MongoDB Atlas using the native driver with no Mongoose. The frontend is plain HTML, CSS, and vanilla JavaScript with client side rendering and no frameworks. Code quality tools include ESLint and Prettier. The app is deployed on Render.com.
+MongoDB Collections
+The clubs collection belongs to Kanad and stores the club name, category, description, weekly time commitment, and timestamps.
+The membership logs collection also belongs to Kanad and stores the club name, member name, weekly hours, benefits, challenges, and timestamps.
+The users collection belongs to Aarya and stores the student name, email, major, year, bio, interests as an array, joined clubs as an array, and a creation timestamp.
+No foreign keys or references exist between any of the collections. Each collection stands completely on its own.
+
+
+User Personas
+
+Persona 1 — Alex, First-Year Student
+Alex is 18 years old, undeclared in his major, and in his first week at Northeastern. He showed up to the involvement fair and was honestly overwhelmed. There were dozens of tables, everyone was pitching their club, and he had maybe 5 hours a week to spare. He followed a few Instagram accounts but never really got useful information back. He just wants somewhere to sit down, look through his options without the noise, and figure out what actually makes sense for him.
+His goals are to build a profile that reflects who he is and what he is looking for, to filter clubs by how much time they actually take, and to read what other students genuinely thought of a club before committing. His frustrations are that every club looks great on a flyer with no way to tell what it is really like, that he has to dig through multiple Instagram pages and GroupMe chats just to find basic information, and that no one tells him upfront how many hours per week something actually takes.
+Persona 2 — Priya, Junior Computer Science Student
+Priya is 21 years old and has been around long enough to know how this works. She has been in a few clubs, dropped a couple because they took way more time than advertised, and is now pretty selective. She wants to update her profile each semester and she likes having data to back up her decisions. If the average member logs 6 hours a week, she knows to think twice.
+Her goals are to keep her profile current without it being a hassle, to quickly filter clubs by time commitment before even reading the description, and to use membership log data to actually compare clubs rather than just their marketing. Her frustrations are that university portals are clunky and do not show anything useful about club workload, that she keeps finding outdated club pages with no recent activity, and that there is no way to share what she learned from being in a club so others do not make the same mistakes.
+Persona 3 — Aisha, Graduate Student and Club Administrator
+Aisha is 23 years old and manages the South Asian Cultural Club. Her biggest headache is keeping the club's information up to date. Right now she has to email someone in student affairs and wait a few days for even a small change to go through. By then interested students have already moved on. She wants control over her own listing.
+Her goals are to add the club to the platform herself and keep it updated without waiting on anyone, to make sure the time commitment listed is honest so they attract the right members, and to remove old or wrong information quickly when things change. Her frustrations are that the current process for updating club information is painfully slow, that she has no visibility into whether students are even finding the club's page, and that members have no structured way to share their experience so recruitment relies entirely on word of mouth.
+
+
+User Stories
+
+Kanad — Clubs Collection
+Story CL-01: Create a Club Entry
+As Aisha, I want to add a new club with its name, category, description, and weekly time commitment so students can find us on the platform.
+Acceptance criteria: The admin form validates all fields. The club appears in the listing right after submission with no page reload needed.
+Story CL-02: View All Clubs
+As Alex, I want to see all the clubs listed on the platform so I can get a sense of what is out there.
+Acceptance criteria: All clubs render as cards using vanilla JavaScript. Each card shows name, category, description, and weekly hours.
+Story CL-03: Filter and Search Clubs
+As Priya, I want to filter clubs by category or max weekly hours and search by name or keyword so I can quickly cut down the list to what actually works for my schedule.
+Acceptance criteria: The search bar and dropdowns filter results dynamically without reloading the page.
+Story CL-04: Edit a Club Entry
+As Aisha, I want to update my club's information when things change so the listing stays accurate.
+Acceptance criteria: The edit form pre-fills with current data. Changes save via PUT and reflect on the page immediately.
+Story CL-05: Delete a Club Entry
+As Aisha, I want to remove a club that is no longer active so the directory does not get cluttered with dead listings.
+Acceptance criteria: A confirmation prompt appears before deletion. The card is removed from the list immediately after confirming.
+Story CL-06: View Club Details and Members
+As Alex, I want to click on a club and see its full details along with a list of students who have already joined, so I know what I am getting into.
+Acceptance criteria: Clicking a club card opens a detail modal. The modal fetches and displays all members who have joined that club.
+Story CL-07: Join a Club
+As Alex, I want to register for a club by entering my personal details so I can become a member of that club.
+Acceptance criteria: The join form accepts name, email, major, and year. On submit the user is saved to the users collection with that club in their joined clubs. If the email already exists, the club is added to their existing profile instead of creating a duplicate.
+Kanad — Membership Logs Collection
+Story ML-01: Log a Club Experience
+As Priya, I want to write up my experience in a club including how many hours it took, what I got out of it, and what was tough, so other students have something real to go off of.
+Acceptance criteria: The form takes club name, member name, weekly hours, benefits, and challenges. The log shows up in the list right after submitting.
+Story ML-02: View Club Experience Tab
+As Alex, I want to scroll through membership logs grouped by club so I can see all the reviews for a specific club in one place.
+Acceptance criteria: Logs are grouped by club name with a review count. Each card shows hours, benefits, and challenges.
+Story ML-03: View Member Experience Tab
+As any visitor, I want to see individual reviews with the member's name so I know who wrote each review and can trust it is from a real student.
+Acceptance criteria: The Member Experience tab only shows logs that have a name attached. Anonymous logs are filtered out.
+Story ML-04: Filter Logs and See Average Hours
+As Alex, I want to filter logs for a specific club and see the average hours members actually spent, so I know what I am signing up for.
+Acceptance criteria: Filtering by club name updates the list dynamically. The average weekly hours for that club appears above the results.
+Story ML-05: Edit a Membership Log
+As Priya, I want to go back and update my log if things changed over the semester so it stays accurate.
+Acceptance criteria: Admin edit form pre-fills existing data. Changes save via PUT and update immediately.
+Story ML-06: Delete a Membership Log
+As Priya, I want to delete a log I wrote if it is no longer relevant.
+Acceptance criteria: Confirmation before deletion. Card disappears from the list immediately.
+Aarya — Users Collection
+Story UP-01: Create a Profile
+As Alex, I want to set up a profile with my name, major, year, bio, and interests so I have a presence on ClubMatch and can connect with people.
+Acceptance criteria: The registration form validates all required fields. The profile is saved and visible in the members list immediately.
+Story UP-02: View All Profiles with Tabs
+As any visitor, I want to browse student profiles filtered by whether they have joined clubs or not, so I can find people with similar involvement levels.
+Acceptance criteria: Three tabs — All, Members, and Students — filter the list dynamically. Each card shows a Member or Student badge.
+Story UP-03: View a Full Profile
+As any visitor, I want to click on a member card and see their full profile including bio, interests, and clubs.
+Acceptance criteria: Clicking a card opens a profile modal with all details. No page reload.
+Story UP-04: Edit a Profile
+As Priya, I want to update my bio and clubs list each semester so my profile reflects where I am at.
+Acceptance criteria: Admin edit pre-fills current data. Changes save via PUT and reflect immediately.
+Story UP-05: Delete a Profile
+As Alex, I want to delete my profile if I decide I do not want to be on the platform anymore.
+Acceptance criteria: Confirmation before deletion. Profile is removed from the members page immediately.
+
+
+Design Mockups
+
+Page 1 — Home Page
+Purpose: The landing page. Gives a quick introduction to ClubMatch and lets users jump into clubs, logs, or profiles.
+Layout description: The top navigation bar shows ClubMatch on the left and Home, Clubs, Membership Logs, Members, and Admin on the right. Below that is a hero section with the headline Discover Your Favorite Club, a short tagline, a search bar with an orange search button, and category filter pills for All, Academic, Cultural, Sports, Professional, Arts, and Service. Below the hero is a How to Use ClubMatch section with four step cards explaining how to create a profile, browse clubs, read experiences, and join a club. Below that is a Featured Clubs grid showing 12 clubs with a View All Clubs button in the top right corner of that section.
+Page 2 — Clubs Page
+Purpose: The main club directory. Browse, filter, search, and join clubs. Admins can add, edit, and delete.
+Layout description: Navigation bar at the top. A Clubs heading with an Add Club button visible only in admin mode. A filter bar with a search input, a category dropdown, and a max hours dropdown. A grid of club cards each showing a colored category icon, category badge, club name, description, weekly hours, and a Click for details and join link. Clicking a card opens a detail modal with full club information, a list of current members, and a Join This Club button. Clicking Join This Club opens a registration form.
+Page 3 — Membership Logs Page
+Purpose: Where students read and submit membership logs. Two tabs separate club reviews from individual member reviews.
+Layout description: Navigation bar at the top. A Reviews heading with a Log My Experience button visible to all users. Two tabs — Club Experience and Member Experience. A filter bar below the tabs. In Club Experience view, logs are grouped by club name with a review count badge and each card shows hours, benefits, and challenges. In Member Experience view, cards show a member avatar, their name, which club they are reviewing, and a View Details button that opens a modal with the full review.
+Page 4 — Members Page
+Purpose: Student profiles. Create your own profile, browse other members, and view full profiles.
+Layout description: Navigation bar at the top. A Members heading with a Create My Profile button. Three tabs — All, Members showing students who have joined clubs, and Students showing students who have not joined any club yet. A search bar to filter by name or interest. Member cards showing an avatar, name, major, year, a green Member badge or blue Student badge, bio, interest tags, and joined clubs. Clicking a card opens a full profile modal.
