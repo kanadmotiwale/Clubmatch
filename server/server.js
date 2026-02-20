@@ -4,6 +4,7 @@ import { connectDB } from "./db.js";
 import clubsRouter from "./routes/clubs.js";
 import logsRouter from "./routes/membership-logs.js";
 import usersRouter from "./routes/users.js";
+import authRouter from "./routes/auth.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.static("public"));
 app.use("/api/clubs", clubsRouter);
 app.use("/api/membership-logs", logsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/auth", authRouter);
 
 connectDB().then(() => {
   app.listen(PORT, () => {

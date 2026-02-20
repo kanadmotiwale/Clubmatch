@@ -1,4 +1,5 @@
 import { api } from "./api.js";
+import { setupAuthNav } from "./auth-state.js";
 
 const grid = document.getElementById("clubs-grid");
 const searchInput = document.getElementById("hero-search");
@@ -181,3 +182,4 @@ searchInput.addEventListener("keydown", (e) => {
 });
 
 loadClubs();
+setupAuthNav();

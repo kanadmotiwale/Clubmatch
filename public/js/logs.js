@@ -1,4 +1,5 @@
 import { api } from "./api.js";
+import { setupAuthNav } from "./auth-state.js";
 
 const list = document.getElementById("logs-list");
 const formContainer = document.getElementById("log-form-container");
@@ -29,37 +30,18 @@ adminBtn.addEventListener("click", () => {
     isAdmin = false;
     adminBtn.classList.remove("active");
     adminBtn.textContent = "Admin";
-    addBtn.classList.add("hidden");
     renderLogs(allLogs);
   } else {
-    adminPasswordInput.value = "";
-    adminError.classList.add("hidden");
-    adminModal.classList.remove("hidden");
-    adminPasswordInput.focus();
+    const pwd = prompt("Enter admin password:");
+    if (pwd === ADMIN_PASSWORD) {
+      isAdmin = true;
+      adminBtn.classList.add("active");
+      adminBtn.textContent = "Admin ✓";
+      renderLogs(allLogs);
+    } else if (pwd !== null) {
+      alert("Incorrect password.");
+    }
   }
-});
-
-adminModalCancel.addEventListener("click", () =>
-  adminModal.classList.add("hidden")
-);
-
-adminModalSubmit.addEventListener("click", () => {
-  if (adminPasswordInput.value === ADMIN_PASSWORD) {
-    isAdmin = true;
-    adminBtn.classList.add("active");
-    adminBtn.textContent = "Admin ✓";
-    addBtn.classList.remove("hidden");
-    adminModal.classList.add("hidden");
-    renderLogs(allLogs);
-  } else {
-    adminError.classList.remove("hidden");
-    adminPasswordInput.value = "";
-    adminPasswordInput.focus();
-  }
-});
-
-adminPasswordInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") adminModalSubmit.click();
 });
 
 tabBtns.forEach((btn) => {
@@ -74,6 +56,7 @@ tabBtns.forEach((btn) => {
     filterClub.value = "";
     statsBanner.classList.add("hidden");
     loadLogs();
+    setupAuthNav();
   });
 });
 

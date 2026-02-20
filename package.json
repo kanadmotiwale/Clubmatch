@@ -14,6 +14,7 @@
   "author": "Kanad Motiwale & Aarya Patil",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
     "mongodb": "^6.5.0"

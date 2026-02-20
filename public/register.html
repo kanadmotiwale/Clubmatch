@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register · ClubMatch</title>
+    <link rel="stylesheet" href="/css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <div class="auth-card">
+      <a href="/" class="auth-logo">🎯 ClubMatch</a>
+      <h1>Create your account</h1>
+      <p class="auth-subtitle">Join ClubMatch and start discovering clubs</p>
+
+      <div id="auth-error" class="auth-error hidden"></div>
+
+      <form id="register-form" class="auth-form">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="Your full name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="you@northeastern.edu"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Create a password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="major">Major</label>
+          <input
+            type="text"
+            id="major"
+            placeholder="e.g. Computer Science"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="year">Year</label>
+          <select id="year" required>
+            <option value="">Select year</option>
+            <option value="Freshman">Freshman</option>
+            <option value="Sophomore">Sophomore</option>
+            <option value="Junior">Junior</option>
+            <option value="Senior">Senior</option>
+            <option value="Graduate">Graduate</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="bio">Bio (optional)</label>
+          <input
+            type="text"
+            id="bio"
+            placeholder="Tell others a bit about yourself"
+          />
+        </div>
+        <div class="form-group">
+          <label for="interests">Interests (optional, comma separated)</label>
+          <input
+            type="text"
+            id="interests"
+            placeholder="e.g. Academic, Sports, Arts"
+          />
+        </div>
+        <button type="submit" class="auth-btn">Create Account</button>
+      </form>
+
+      <div class="auth-switch">
+        Already have an account? <a href="/login.html">Log in</a>
+      </div>
+
+      <a href="/" class="auth-guest">Continue as guest →</a>
+    </div>
+
+    <script type="module" src="/js/register.js"></script>
+  </body>
+</html>

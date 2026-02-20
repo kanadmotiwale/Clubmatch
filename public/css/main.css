@@ -81,6 +81,26 @@ body {
   border-color: #f97316;
 }
 
+.btn-auth-nav {
+  background: #f97316;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-auth-nav:hover {
+  background: #f97316;
+  color: white;
+}
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -98,10 +118,6 @@ body {
   background: white;
   border-radius: 2px;
   transition: all 0.2s;
-}
-
-.nav-menu-open .nav-links {
-  display: flex;
 }
 
 .container {
@@ -720,7 +736,6 @@ body {
   margin-top: 0.5rem;
 }
 
-/* ─── Tablet (max 1024px) ─── */
 @media (max-width: 1024px) {
   .container {
     padding: 2rem 2rem;
@@ -735,7 +750,6 @@ body {
   }
 }
 
-/* ─── Mobile (max 768px) ─── */
 @media (max-width: 768px) {
   .navbar {
     padding: 0 1.25rem;
@@ -778,6 +792,13 @@ body {
     margin-top: 0.5rem;
     width: 100%;
     text-align: center;
+  }
+
+  .btn-auth-nav {
+    margin-top: 0.5rem;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
   }
 
   .hamburger {
@@ -870,7 +891,6 @@ body {
   }
 }
 
-/* ─── Small Mobile (max 480px) ─── */
 @media (max-width: 480px) {
   .hero h1 {
     font-size: 1.5rem;

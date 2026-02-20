@@ -1,4 +1,5 @@
 import { api } from "./api.js";
+import { getUser, setupAuthNav } from "./auth-state.js";
 
 const list = document.getElementById("clubs-list");
 const formContainer = document.getElementById("club-form-container");
@@ -201,6 +202,13 @@ async function showDetail(club) {
 
   document.getElementById("open-join-btn").addEventListener("click", () => {
     document.getElementById("join-club-name").value = club.name;
+    const user = getUser();
+    if (user) {
+      document.getElementById("join-name").value = user.name || "";
+      document.getElementById("join-email").value = user.email || "";
+      document.getElementById("join-major").value = user.major || "";
+      document.getElementById("join-year").value = user.year || "";
+    }
     detailOverlay.classList.add("hidden");
     joinOverlay.classList.remove("hidden");
   });

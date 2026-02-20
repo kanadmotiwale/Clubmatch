@@ -1,4 +1,5 @@
 import { api } from "./api.js";
+import { getUser, setupAuthNav } from "./auth-state.js";
 
 const list = document.getElementById("members-list");
 const searchInput = document.getElementById("search-members");
@@ -31,33 +32,16 @@ adminBtn.addEventListener("click", () => {
     adminBtn.textContent = "Admin";
     renderMembers(getFilteredMembers());
   } else {
-    adminPasswordInput.value = "";
-    adminError.classList.add("hidden");
-    adminModal.classList.remove("hidden");
-    adminPasswordInput.focus();
+    const pwd = prompt("Enter admin password:");
+    if (pwd === ADMIN_PASSWORD) {
+      isAdmin = true;
+      adminBtn.classList.add("active");
+      adminBtn.textContent = "Admin ✓";
+      renderMembers(getFilteredMembers());
+    } else if (pwd !== null) {
+      alert("Incorrect password.");
+    }
   }
-});
-
-adminModalCancel.addEventListener("click", () =>
-  adminModal.classList.add("hidden")
-);
-
-adminModalSubmit.addEventListener("click", () => {
-  if (adminPasswordInput.value === ADMIN_PASSWORD) {
-    isAdmin = true;
-    adminBtn.classList.add("active");
-    adminBtn.textContent = "Admin ✓";
-    adminModal.classList.add("hidden");
-    renderMembers(getFilteredMembers());
-  } else {
-    adminError.classList.remove("hidden");
-    adminPasswordInput.value = "";
-    adminPasswordInput.focus();
-  }
-});
-
-adminPasswordInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") adminModalSubmit.click();
 });
 
 tabBtns.forEach((btn) => {
@@ -99,6 +83,17 @@ createProfileBtn.addEventListener("click", () => {
   profileFormTitle.textContent = "Create My Profile";
   profileForm.reset();
   document.getElementById("profile-id").value = "";
+  const user = getUser();
+  if (user) {
+    document.getElementById("profile-name").value = user.name || "";
+    document.getElementById("profile-email").value = user.email || "";
+    document.getElementById("profile-major").value = user.major || "";
+    document.getElementById("profile-year").value = user.year || "";
+    document.getElementById("profile-bio").value = user.bio || "";
+    document.getElementById("profile-interests").value = (
+      user.interests || []
+    ).join(", ");
+  }
   profileFormContainer.classList.remove("hidden");
   profileFormContainer.scrollIntoView({ behavior: "smooth" });
 });
@@ -141,6 +136,7 @@ profileForm.addEventListener("submit", async (e) => {
     profileFormContainer.classList.add("hidden");
     profileForm.reset();
     await loadMembers();
+    setupAuthNav();
   } catch (err) {
     alert(err.message);
   }
