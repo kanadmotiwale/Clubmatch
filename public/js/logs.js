@@ -61,7 +61,9 @@ async function loadLogs() {
             filtered =
                 activeTab === "club"
                     ? allLogs.filter((l) => l.clubName.toLowerCase().includes(search))
-                    : allLogs.filter((l) => l.memberName && l.memberName.toLowerCase().includes(search));
+                    : allLogs.filter(
+                        (l) => l.memberName && l.memberName.toLowerCase().includes(search)
+                    );
         }
         if (activeTab === "club" && filterClub.value.trim()) {
             loadStats(filterClub.value.trim());
@@ -87,6 +89,41 @@ async function loadStats(clubName) {
     }
 }
 
+function showLogDetail(log) {
+    const overlay = document.createElement("div");
+    overlay.className = "detail-overlay";
+    if (activeTab === "club") {
+        overlay.innerHTML = `
+      <div class="detail-box">
+        <button class="detail-close" id="log-detail-close">✕</button>
+        <h2 style="margin-bottom:0.5rem;">${log.clubName}</h2>
+        <span class="hours" style="display:inline-block; margin-bottom:1rem;">⏱ ${log.weeklyHours} hrs/week</span>
+        <p style="margin-bottom:0.75rem;"><span class="label-benefits">✓ Benefits:</span> ${log.benefits}</p>
+        <p><span class="label-challenges">✗ Challenges:</span> ${log.challenges}</p>
+      </div>
+    `;
+    } else {
+        overlay.innerHTML = `
+      <div class="detail-box">
+        <button class="detail-close" id="log-detail-close">✕</button>
+        <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem;">
+          <div class="log-avatar">${(log.memberName || "A").charAt(0).toUpperCase()}</div>
+          <div>
+            <h2 style="margin-bottom:0.1rem;">${log.memberName || "Anonymous"}</h2>
+            <span class="log-club-tag">${log.clubName}</span>
+          </div>
+        </div>
+        <span class="hours" style="display:inline-block; margin-bottom:1rem;">⏱ ${log.weeklyHours} hrs/week</span>
+        <p style="margin-bottom:0.75rem;"><span class="label-benefits">✓ Benefits:</span> ${log.benefits}</p>
+        <p><span class="label-challenges">✗ Challenges:</span> ${log.challenges}</p>
+      </div>
+    `;
+    }
+    document.body.appendChild(overlay);
+    overlay.querySelector("#log-detail-close").addEventListener("click", () => overlay.remove());
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.remove(); });
+}
+
 function renderLogs(logs) {
     if (logs.length === 0) {
         list.innerHTML = `<p class="empty">No logs found.</p>`;
@@ -109,65 +146,58 @@ function renderLogs(logs) {
           <span class="log-group-count">${clubLogs.length} review${clubLogs.length !== 1 ? "s" : ""}</span>
         </div>
         <div class="logs-grid">
-          ${clubLogs
-                    .map(
-                        (l) => `
-            <div class="log-card">
+          ${clubLogs.map((l) => `
+            <div class="log-card log-card-club" data-id="${l._id}">
               <div class="log-card-header">
                 <span class="hours">⏱ ${l.weeklyHours} hrs/week</span>
-                ${
-                            isAdmin
-                                ? `<div class="card-actions">
-                    <button class="btn-edit" data-id="${l._id}">Edit</button>
-                    <button class="btn-delete" data-id="${l._id}">Delete</button>
-                  </div>`
-                                : ""
-                        }
+                ${isAdmin ? `
+                <div class="card-actions">
+                  <button class="btn-edit" data-id="${l._id}">Edit</button>
+                  <button class="btn-delete" data-id="${l._id}">Delete</button>
+                </div>` : ""}
               </div>
-              ${l.memberName ? `<p class="log-member-name">— ${l.memberName}</p>` : ""}
-              <p><span class="label-benefits">✓ Benefits:</span> ${l.benefits}</p>
-              <p><span class="label-challenges">✗ Challenges:</span> ${l.challenges}</p>
+              <button class="btn-view-details" data-id="${l._id}">View Details →</button>
             </div>
-          `
-                    )
-                    .join("")}
+          `).join("")}
         </div>
       </div>
     `
             )
             .join("");
     } else {
-        list.innerHTML = `<div class="logs-grid">${logs
-            .map(
-                (l) => `
-      <div class="log-card">
+        list.innerHTML = `<div class="logs-grid">${logs.map((l) => `
+      <div class="log-card log-card-member" data-id="${l._id}">
         <div class="log-card-header">
-          <h3>${l.memberName || "Anonymous"}</h3>
-          ${
-                    isAdmin
-                        ? `<div class="card-actions">
-              <button class="btn-edit" data-id="${l._id}">Edit</button>
-              <button class="btn-delete" data-id="${l._id}">Delete</button>
-            </div>`
-                        : ""
-                }
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <div class="log-avatar">${(l.memberName || "A").charAt(0).toUpperCase()}</div>
+            <h3>${l.memberName || "Anonymous"}</h3>
+          </div>
+          ${isAdmin ? `
+          <div class="card-actions">
+            <button class="btn-edit" data-id="${l._id}">Edit</button>
+            <button class="btn-delete" data-id="${l._id}">Delete</button>
+          </div>` : ""}
         </div>
         <span class="log-club-tag">${l.clubName}</span>
-        <span class="hours">⏱ ${l.weeklyHours} hrs/week</span>
-        <p><span class="label-benefits">✓ Benefits:</span> ${l.benefits}</p>
-        <p><span class="label-challenges">✗ Challenges:</span> ${l.challenges}</p>
+        <button class="btn-view-details" data-id="${l._id}">View Details →</button>
       </div>
-    `
-            )
-            .join("")}</div>`;
+    `).join("")}</div>`;
     }
+
+    list.querySelectorAll(".btn-view-details").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const log = allLogs.find((l) => l._id === btn.dataset.id);
+            if (log) showLogDetail(log);
+        });
+    });
 
     if (isAdmin) {
         list.querySelectorAll(".btn-edit").forEach((btn) => {
-            btn.addEventListener("click", () => openEdit(btn.dataset.id));
+            btn.addEventListener("click", (e) => { e.stopPropagation(); openEdit(btn.dataset.id); });
         });
         list.querySelectorAll(".btn-delete").forEach((btn) => {
-            btn.addEventListener("click", () => deleteLog(btn.dataset.id));
+            btn.addEventListener("click", (e) => { e.stopPropagation(); deleteLog(btn.dataset.id); });
         });
     }
 }
