@@ -29,80 +29,85 @@ const adminModalCancel = document.getElementById("admin-modal-cancel");
 const adminModalSubmit = document.getElementById("admin-modal-submit");
 
 adminBtn.addEventListener("click", () => {
-    if (isAdmin) {
-        isAdmin = false;
-        adminBtn.classList.remove("active");
-        adminBtn.textContent = "Admin";
-        addBtn.classList.add("hidden");
-        loadClubs();
-    } else {
-        adminPasswordInput.value = "";
-        adminError.classList.add("hidden");
-        adminModal.classList.remove("hidden");
-        adminPasswordInput.focus();
-    }
+  if (isAdmin) {
+    isAdmin = false;
+    adminBtn.classList.remove("active");
+    adminBtn.textContent = "Admin";
+    addBtn.classList.add("hidden");
+    loadClubs();
+  } else {
+    adminPasswordInput.value = "";
+    adminError.classList.add("hidden");
+    adminModal.classList.remove("hidden");
+    adminPasswordInput.focus();
+  }
 });
 
 adminModalCancel.addEventListener("click", () => {
-    adminModal.classList.add("hidden");
+  adminModal.classList.add("hidden");
 });
 
 adminModalSubmit.addEventListener("click", () => {
-    if (adminPasswordInput.value === ADMIN_PASSWORD) {
-        isAdmin = true;
-        adminBtn.classList.add("active");
-        adminBtn.textContent = "Admin ✓";
-        addBtn.classList.remove("hidden");
-        adminModal.classList.add("hidden");
-        loadClubs();
-    } else {
-        adminError.classList.remove("hidden");
-        adminPasswordInput.value = "";
-        adminPasswordInput.focus();
-    }
+  if (adminPasswordInput.value === ADMIN_PASSWORD) {
+    isAdmin = true;
+    adminBtn.classList.add("active");
+    adminBtn.textContent = "Admin ✓";
+    addBtn.classList.remove("hidden");
+    adminModal.classList.add("hidden");
+    loadClubs();
+  } else {
+    adminError.classList.remove("hidden");
+    adminPasswordInput.value = "";
+    adminPasswordInput.focus();
+  }
 });
 
 adminPasswordInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") adminModalSubmit.click();
+  if (e.key === "Enter") adminModalSubmit.click();
 });
 
 async function loadClubs() {
-    try {
-        let url = "/clubs?";
-        if (filterCategory.value) url += `category=${encodeURIComponent(filterCategory.value)}&`;
-        if (filterTime.value) url += `maxTime=${filterTime.value}`;
-        allClubs = await api.get(url);
-        const search = searchInput.value.trim().toLowerCase();
-        const filtered = search
-            ? allClubs.filter(
-                (c) =>
-                    c.name.toLowerCase().includes(search) ||
-                    c.category.toLowerCase().includes(search) ||
-                    c.description.toLowerCase().includes(search)
-            )
-            : allClubs;
-        renderClubs(filtered);
-    } catch (err) {
-        list.innerHTML = `<p class="error">Failed to load clubs.</p>`;
-    }
+  try {
+    let url = "/clubs?";
+    if (filterCategory.value)
+      url += `category=${encodeURIComponent(filterCategory.value)}&`;
+    if (filterTime.value) url += `maxTime=${filterTime.value}`;
+    allClubs = await api.get(url);
+    const search = searchInput.value.trim().toLowerCase();
+    const filtered = search
+      ? allClubs.filter(
+          (c) =>
+            c.name.toLowerCase().includes(search) ||
+            c.category.toLowerCase().includes(search) ||
+            c.description.toLowerCase().includes(search)
+        )
+      : allClubs;
+    renderClubs(filtered);
+  } catch (err) {
+    list.innerHTML = `<p class="error">Failed to load clubs.</p>`;
+  }
 }
 
 function renderClubs(clubs) {
-    if (clubs.length === 0) {
-        list.innerHTML = `<p class="empty">No clubs found. Try adjusting your filters.</p>`;
-        return;
-    }
-    list.innerHTML = clubs
-        .map(
-            (c) => `
+  if (clubs.length === 0) {
+    list.innerHTML = `<p class="empty">No clubs found. Try adjusting your filters.</p>`;
+    return;
+  }
+  list.innerHTML = clubs
+    .map(
+      (c) => `
     <div class="club-card" data-id="${c._id}">
       <div class="club-card-header">
         <span class="badge">${c.category}</span>
-        ${isAdmin ? `
+        ${
+          isAdmin
+            ? `
         <div class="card-actions">
           <button class="btn-edit" data-id="${c._id}">Edit</button>
           <button class="btn-delete" data-id="${c._id}">Delete</button>
-        </div>` : ""}
+        </div>`
+            : ""
+        }
       </div>
       <h3>${c.name}</h3>
       <p>${c.description}</p>
@@ -112,39 +117,53 @@ function renderClubs(clubs) {
       </div>
     </div>
   `
-        )
-        .join("");
+    )
+    .join("");
 
-    list.querySelectorAll(".club-card").forEach((card) => {
-        card.addEventListener("click", (e) => {
-            if (e.target.classList.contains("btn-edit") || e.target.classList.contains("btn-delete")) return;
-            const club = allClubs.find((c) => c._id === card.dataset.id);
-            if (club) showDetail(club);
-        });
+  list.querySelectorAll(".club-card").forEach((card) => {
+    card.addEventListener("click", (e) => {
+      if (
+        e.target.classList.contains("btn-edit") ||
+        e.target.classList.contains("btn-delete")
+      )
+        return;
+      const club = allClubs.find((c) => c._id === card.dataset.id);
+      if (club) showDetail(club);
     });
+  });
 
-    if (isAdmin) {
-        list.querySelectorAll(".btn-edit").forEach((btn) => {
-            btn.addEventListener("click", (e) => { e.stopPropagation(); openEdit(btn.dataset.id); });
-        });
-        list.querySelectorAll(".btn-delete").forEach((btn) => {
-            btn.addEventListener("click", (e) => { e.stopPropagation(); deleteClub(btn.dataset.id); });
-        });
-    }
+  if (isAdmin) {
+    list.querySelectorAll(".btn-edit").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openEdit(btn.dataset.id);
+      });
+    });
+    list.querySelectorAll(".btn-delete").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        deleteClub(btn.dataset.id);
+      });
+    });
+  }
 }
 
 async function showDetail(club) {
-    let membersHTML = "";
-    try {
-        const members = await api.get(`/users/by-club/${encodeURIComponent(club.name)}`);
-        if (members.length > 0) {
-            membersHTML = `
+  let membersHTML = "";
+  try {
+    const members = await api.get(
+      `/users/by-club/${encodeURIComponent(club.name)}`
+    );
+    if (members.length > 0) {
+      membersHTML = `
         <div style="margin-top:1.25rem;">
           <p style="font-weight:700; font-size:0.875rem; color:#374151; margin-bottom:0.75rem;">
             👥 Members (${members.length})
           </p>
           <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-            ${members.map((m) => `
+            ${members
+              .map(
+                (m) => `
               <div style="display:flex; align-items:center; gap:0.5rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:0.4rem 0.75rem;">
                 <div style="background:linear-gradient(135deg,#1e293b,#334155); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">
                   ${m.name.charAt(0).toUpperCase()}
@@ -154,18 +173,20 @@ async function showDetail(club) {
                   <p style="font-size:0.75rem; color:#6b7280; margin:0;">${m.major} · ${m.year}</p>
                 </div>
               </div>
-            `).join("")}
+            `
+              )
+              .join("")}
           </div>
         </div>
       `;
-        } else {
-            membersHTML = `<p style="margin-top:1rem; font-size:0.875rem; color:#9ca3af;">No members have joined this club yet. Be the first!</p>`;
-        }
-    } catch (err) {
-        membersHTML = "";
+    } else {
+      membersHTML = `<p style="margin-top:1rem; font-size:0.875rem; color:#9ca3af;">No members have joined this club yet. Be the first!</p>`;
     }
+  } catch (err) {
+    membersHTML = "";
+  }
 
-    detailContent.innerHTML = `
+  detailContent.innerHTML = `
     <div class="detail-meta">
       <span class="badge">${club.category}</span>
       <span class="hours">⏱ ${club.weeklyTimeCommitment} hrs/week</span>
@@ -176,116 +197,120 @@ async function showDetail(club) {
     <button class="btn-join" id="open-join-btn" data-name="${club.name}">Join This Club</button>
     ${membersHTML}
   `;
-    detailOverlay.classList.remove("hidden");
+  detailOverlay.classList.remove("hidden");
 
-    document.getElementById("open-join-btn").addEventListener("click", () => {
-        document.getElementById("join-club-name").value = club.name;
-        detailOverlay.classList.add("hidden");
-        joinOverlay.classList.remove("hidden");
-    });
+  document.getElementById("open-join-btn").addEventListener("click", () => {
+    document.getElementById("join-club-name").value = club.name;
+    detailOverlay.classList.add("hidden");
+    joinOverlay.classList.remove("hidden");
+  });
 }
 
-detailClose.addEventListener("click", () => detailOverlay.classList.add("hidden"));
+detailClose.addEventListener("click", () =>
+  detailOverlay.classList.add("hidden")
+);
 detailOverlay.addEventListener("click", (e) => {
-    if (e.target === detailOverlay) detailOverlay.classList.add("hidden");
+  if (e.target === detailOverlay) detailOverlay.classList.add("hidden");
 });
 
 joinClose.addEventListener("click", () => joinOverlay.classList.add("hidden"));
-joinCancelBtn.addEventListener("click", () => joinOverlay.classList.add("hidden"));
+joinCancelBtn.addEventListener("click", () =>
+  joinOverlay.classList.add("hidden")
+);
 joinOverlay.addEventListener("click", (e) => {
-    if (e.target === joinOverlay) joinOverlay.classList.add("hidden");
+  if (e.target === joinOverlay) joinOverlay.classList.add("hidden");
 });
 
 joinForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const data = {
-        name: document.getElementById("join-name").value,
-        email: document.getElementById("join-email").value,
-        major: document.getElementById("join-major").value,
-        year: document.getElementById("join-year").value,
-        bio: "",
-        interests: [],
-        joinedClubs: [document.getElementById("join-club-name").value],
-    };
-    try {
-        await api.post("/users", data);
-        joinOverlay.classList.add("hidden");
-        joinForm.reset();
-        alert(`You have successfully registered for ${data.joinedClubs[0]}!`);
-    } catch (err) {
-        alert(err.message);
-    }
+  e.preventDefault();
+  const data = {
+    name: document.getElementById("join-name").value,
+    email: document.getElementById("join-email").value,
+    major: document.getElementById("join-major").value,
+    year: document.getElementById("join-year").value,
+    bio: "",
+    interests: [],
+    joinedClubs: [document.getElementById("join-club-name").value],
+  };
+  try {
+    await api.post("/users", data);
+    joinOverlay.classList.add("hidden");
+    joinForm.reset();
+    alert(`You have successfully registered for ${data.joinedClubs[0]}!`);
+  } catch (err) {
+    alert(err.message);
+  }
 });
 
 function openAdd() {
-    formTitle.textContent = "Add Club";
-    form.reset();
-    document.getElementById("club-id").value = "";
-    formContainer.classList.remove("hidden");
-    formContainer.scrollIntoView({ behavior: "smooth" });
+  formTitle.textContent = "Add Club";
+  form.reset();
+  document.getElementById("club-id").value = "";
+  formContainer.classList.remove("hidden");
+  formContainer.scrollIntoView({ behavior: "smooth" });
 }
 
 async function openEdit(id) {
-    try {
-        const club = await api.get(`/clubs/${id}`);
-        formTitle.textContent = "Edit Club";
-        document.getElementById("club-id").value = club._id;
-        document.getElementById("club-name").value = club.name;
-        document.getElementById("club-category").value = club.category;
-        document.getElementById("club-description").value = club.description;
-        document.getElementById("club-hours").value = club.weeklyTimeCommitment;
-        formContainer.classList.remove("hidden");
-        formContainer.scrollIntoView({ behavior: "smooth" });
-    } catch (err) {
-        alert("Failed to load club details.");
-    }
+  try {
+    const club = await api.get(`/clubs/${id}`);
+    formTitle.textContent = "Edit Club";
+    document.getElementById("club-id").value = club._id;
+    document.getElementById("club-name").value = club.name;
+    document.getElementById("club-category").value = club.category;
+    document.getElementById("club-description").value = club.description;
+    document.getElementById("club-hours").value = club.weeklyTimeCommitment;
+    formContainer.classList.remove("hidden");
+    formContainer.scrollIntoView({ behavior: "smooth" });
+  } catch (err) {
+    alert("Failed to load club details.");
+  }
 }
 
 async function deleteClub(id) {
-    if (!confirm("Are you sure you want to delete this club?")) return;
-    try {
-        await api.delete(`/clubs/${id}`);
-        loadClubs();
-    } catch (err) {
-        alert("Failed to delete club.");
-    }
+  if (!confirm("Are you sure you want to delete this club?")) return;
+  try {
+    await api.delete(`/clubs/${id}`);
+    loadClubs();
+  } catch (err) {
+    alert("Failed to delete club.");
+  }
 }
 
 form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const id = document.getElementById("club-id").value;
-    const data = {
-        name: document.getElementById("club-name").value,
-        category: document.getElementById("club-category").value,
-        description: document.getElementById("club-description").value,
-        weeklyTimeCommitment: document.getElementById("club-hours").value,
-    };
-    try {
-        if (id) {
-            await api.put(`/clubs/${id}`, data);
-        } else {
-            await api.post("/clubs", data);
-        }
-        formContainer.classList.add("hidden");
-        form.reset();
-        loadClubs();
-    } catch (err) {
-        alert(err.message);
+  e.preventDefault();
+  const id = document.getElementById("club-id").value;
+  const data = {
+    name: document.getElementById("club-name").value,
+    category: document.getElementById("club-category").value,
+    description: document.getElementById("club-description").value,
+    weeklyTimeCommitment: document.getElementById("club-hours").value,
+  };
+  try {
+    if (id) {
+      await api.put(`/clubs/${id}`, data);
+    } else {
+      await api.post("/clubs", data);
     }
+    formContainer.classList.add("hidden");
+    form.reset();
+    loadClubs();
+  } catch (err) {
+    alert(err.message);
+  }
 });
 
 addBtn.addEventListener("click", openAdd);
 cancelBtn.addEventListener("click", () => {
-    formContainer.classList.add("hidden");
-    form.reset();
+  formContainer.classList.add("hidden");
+  form.reset();
 });
 filterCategory.addEventListener("change", loadClubs);
 filterTime.addEventListener("change", loadClubs);
 
 let debounceTimer;
 searchInput.addEventListener("input", () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(loadClubs, 400);
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(loadClubs, 400);
 });
 
 loadClubs();
