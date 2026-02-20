@@ -11,165 +11,236 @@ const statsBanner = document.getElementById("stats-banner");
 const statsClubName = document.getElementById("stats-club-name");
 const statsAvg = document.getElementById("stats-avg");
 const adminBtn = document.getElementById("admin-btn");
+const tabBtns = document.querySelectorAll(".tab-btn");
 
 const ADMIN_PASSWORD = "clubmatch2025";
 let isAdmin = false;
+let activeTab = "club";
+let allLogs = [];
 
 adminBtn.addEventListener("click", () => {
-  if (isAdmin) {
-    isAdmin = false;
-    adminBtn.classList.remove("active");
-    adminBtn.textContent = "Admin";
-    addBtn.classList.add("hidden");
-    loadLogs();
-  } else {
-    const pwd = prompt("Enter admin password:");
-    if (pwd === ADMIN_PASSWORD) {
-      isAdmin = true;
-      adminBtn.classList.add("active");
-      adminBtn.textContent = "Admin ✓";
-      addBtn.classList.remove("hidden");
-      loadLogs();
-    } else if (pwd !== null) {
-      alert("Incorrect password.");
+    if (isAdmin) {
+        isAdmin = false;
+        adminBtn.classList.remove("active");
+        adminBtn.textContent = "Admin";
+        addBtn.classList.add("hidden");
+        renderLogs(allLogs);
+    } else {
+        const pwd = prompt("Enter admin password:");
+        if (pwd === ADMIN_PASSWORD) {
+            isAdmin = true;
+            adminBtn.classList.add("active");
+            adminBtn.textContent = "Admin ✓";
+            addBtn.classList.remove("hidden");
+            renderLogs(allLogs);
+        } else if (pwd !== null) {
+            alert("Incorrect password.");
+        }
     }
-  }
+});
+
+tabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        tabBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeTab = btn.dataset.tab;
+        filterClub.placeholder =
+            activeTab === "club" ? "Filter by club name..." : "Filter by member name...";
+        filterClub.value = "";
+        statsBanner.classList.add("hidden");
+        loadLogs();
+    });
 });
 
 async function loadLogs() {
-  try {
-    const clubName = filterClub.value.trim();
-    const url = clubName
-      ? `/membership-logs?clubName=${encodeURIComponent(clubName)}`
-      : "/membership-logs";
-    const logs = await api.get(url);
-    renderLogs(logs);
-    if (clubName) loadStats(clubName);
-    else statsBanner.classList.add("hidden");
-  } catch (err) {
-    list.innerHTML = `<p class="error">Failed to load logs.</p>`;
-  }
+    try {
+        allLogs = await api.get("/membership-logs");
+        const search = filterClub.value.trim().toLowerCase();
+        let filtered = allLogs;
+        if (search) {
+            filtered =
+                activeTab === "club"
+                    ? allLogs.filter((l) => l.clubName.toLowerCase().includes(search))
+                    : allLogs.filter((l) => l.memberName && l.memberName.toLowerCase().includes(search));
+        }
+        if (activeTab === "club" && filterClub.value.trim()) {
+            loadStats(filterClub.value.trim());
+        } else {
+            statsBanner.classList.add("hidden");
+        }
+        renderLogs(filtered);
+    } catch (err) {
+        list.innerHTML = `<p class="error">Failed to load logs.</p>`;
+    }
 }
 
 async function loadStats(clubName) {
-  try {
-    const data = await api.get(
-      `/membership-logs/stats/${encodeURIComponent(clubName)}`
-    );
-    statsClubName.textContent = clubName;
-    statsAvg.textContent = data.avgHours;
-    statsBanner.classList.remove("hidden");
-  } catch (err) {
-    statsBanner.classList.add("hidden");
-  }
+    try {
+        const data = await api.get(
+            `/membership-logs/stats/${encodeURIComponent(clubName)}`
+        );
+        statsClubName.textContent = clubName;
+        statsAvg.textContent = data.avgHours;
+        statsBanner.classList.remove("hidden");
+    } catch (err) {
+        statsBanner.classList.add("hidden");
+    }
 }
 
 function renderLogs(logs) {
-  if (logs.length === 0) {
-    list.innerHTML = `<p class="empty">No logs found.</p>`;
-    return;
-  }
-  list.innerHTML = `<div class="logs-grid">${logs
-    .map(
-      (l) => `
-    <div class="log-card">
-      <div class="log-card-header">
-        <h3>${l.clubName}</h3>
-        ${
-          isAdmin
-            ? `
-        <div class="card-actions">
-          <button class="btn-edit" data-id="${l._id}">Edit</button>
-          <button class="btn-delete" data-id="${l._id}">Delete</button>
-        </div>`
-            : ""
-        }
-      </div>
-      <span class="hours">⏱ ${l.weeklyHours} hrs/week</span>
-      <p><span class="label-benefits">✓ Benefits:</span> ${l.benefits}</p>
-      <p><span class="label-challenges">✗ Challenges:</span> ${l.challenges}</p>
-    </div>
-  `
-    )
-    .join("")}</div>`;
+    if (logs.length === 0) {
+        list.innerHTML = `<p class="empty">No logs found.</p>`;
+        return;
+    }
 
-  if (isAdmin) {
-    list.querySelectorAll(".btn-edit").forEach((btn) => {
-      btn.addEventListener("click", () => openEdit(btn.dataset.id));
-    });
-    list.querySelectorAll(".btn-delete").forEach((btn) => {
-      btn.addEventListener("click", () => deleteLog(btn.dataset.id));
-    });
-  }
+    if (activeTab === "club") {
+        const grouped = {};
+        logs.forEach((l) => {
+            if (!grouped[l.clubName]) grouped[l.clubName] = [];
+            grouped[l.clubName].push(l);
+        });
+
+        list.innerHTML = Object.entries(grouped)
+            .map(
+                ([clubName, clubLogs]) => `
+      <div class="log-group">
+        <div class="log-group-header">
+          <h2 class="log-group-title">${clubName}</h2>
+          <span class="log-group-count">${clubLogs.length} review${clubLogs.length !== 1 ? "s" : ""}</span>
+        </div>
+        <div class="logs-grid">
+          ${clubLogs
+                    .map(
+                        (l) => `
+            <div class="log-card">
+              <div class="log-card-header">
+                <span class="hours">⏱ ${l.weeklyHours} hrs/week</span>
+                ${
+                            isAdmin
+                                ? `<div class="card-actions">
+                    <button class="btn-edit" data-id="${l._id}">Edit</button>
+                    <button class="btn-delete" data-id="${l._id}">Delete</button>
+                  </div>`
+                                : ""
+                        }
+              </div>
+              ${l.memberName ? `<p class="log-member-name">— ${l.memberName}</p>` : ""}
+              <p><span class="label-benefits">✓ Benefits:</span> ${l.benefits}</p>
+              <p><span class="label-challenges">✗ Challenges:</span> ${l.challenges}</p>
+            </div>
+          `
+                    )
+                    .join("")}
+        </div>
+      </div>
+    `
+            )
+            .join("");
+    } else {
+        list.innerHTML = `<div class="logs-grid">${logs
+            .map(
+                (l) => `
+      <div class="log-card">
+        <div class="log-card-header">
+          <h3>${l.memberName || "Anonymous"}</h3>
+          ${
+                    isAdmin
+                        ? `<div class="card-actions">
+              <button class="btn-edit" data-id="${l._id}">Edit</button>
+              <button class="btn-delete" data-id="${l._id}">Delete</button>
+            </div>`
+                        : ""
+                }
+        </div>
+        <span class="log-club-tag">${l.clubName}</span>
+        <span class="hours">⏱ ${l.weeklyHours} hrs/week</span>
+        <p><span class="label-benefits">✓ Benefits:</span> ${l.benefits}</p>
+        <p><span class="label-challenges">✗ Challenges:</span> ${l.challenges}</p>
+      </div>
+    `
+            )
+            .join("")}</div>`;
+    }
+
+    if (isAdmin) {
+        list.querySelectorAll(".btn-edit").forEach((btn) => {
+            btn.addEventListener("click", () => openEdit(btn.dataset.id));
+        });
+        list.querySelectorAll(".btn-delete").forEach((btn) => {
+            btn.addEventListener("click", () => deleteLog(btn.dataset.id));
+        });
+    }
 }
 
 function openAdd() {
-  formTitle.textContent = "Add Membership Log";
-  form.reset();
-  document.getElementById("log-id").value = "";
-  formContainer.classList.remove("hidden");
-  formContainer.scrollIntoView({ behavior: "smooth" });
+    formTitle.textContent = "Add Membership Log";
+    form.reset();
+    document.getElementById("log-id").value = "";
+    formContainer.classList.remove("hidden");
+    formContainer.scrollIntoView({ behavior: "smooth" });
 }
 
 async function openEdit(id) {
-  try {
-    const log = await api.get(`/membership-logs/${id}`);
-    formTitle.textContent = "Edit Membership Log";
-    document.getElementById("log-id").value = log._id;
-    document.getElementById("log-club").value = log.clubName;
-    document.getElementById("log-hours").value = log.weeklyHours;
-    document.getElementById("log-benefits").value = log.benefits;
-    document.getElementById("log-challenges").value = log.challenges;
-    formContainer.classList.remove("hidden");
-    formContainer.scrollIntoView({ behavior: "smooth" });
-  } catch (err) {
-    alert("Failed to load log details.");
-  }
+    try {
+        const log = await api.get(`/membership-logs/${id}`);
+        formTitle.textContent = "Edit Membership Log";
+        document.getElementById("log-id").value = log._id;
+        document.getElementById("log-club").value = log.clubName;
+        document.getElementById("log-member").value = log.memberName || "";
+        document.getElementById("log-hours").value = log.weeklyHours;
+        document.getElementById("log-benefits").value = log.benefits;
+        document.getElementById("log-challenges").value = log.challenges;
+        formContainer.classList.remove("hidden");
+        formContainer.scrollIntoView({ behavior: "smooth" });
+    } catch (err) {
+        alert("Failed to load log details.");
+    }
 }
 
 async function deleteLog(id) {
-  if (!confirm("Are you sure you want to delete this log?")) return;
-  try {
-    await api.delete(`/membership-logs/${id}`);
-    loadLogs();
-  } catch (err) {
-    alert("Failed to delete log.");
-  }
+    if (!confirm("Are you sure you want to delete this log?")) return;
+    try {
+        await api.delete(`/membership-logs/${id}`);
+        loadLogs();
+    } catch (err) {
+        alert("Failed to delete log.");
+    }
 }
 
 form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const id = document.getElementById("log-id").value;
-  const data = {
-    clubName: document.getElementById("log-club").value,
-    weeklyHours: document.getElementById("log-hours").value,
-    benefits: document.getElementById("log-benefits").value,
-    challenges: document.getElementById("log-challenges").value,
-  };
-  try {
-    if (id) {
-      await api.put(`/membership-logs/${id}`, data);
-    } else {
-      await api.post("/membership-logs", data);
+    e.preventDefault();
+    const id = document.getElementById("log-id").value;
+    const data = {
+        clubName: document.getElementById("log-club").value,
+        memberName: document.getElementById("log-member").value,
+        weeklyHours: document.getElementById("log-hours").value,
+        benefits: document.getElementById("log-benefits").value,
+        challenges: document.getElementById("log-challenges").value,
+    };
+    try {
+        if (id) {
+            await api.put(`/membership-logs/${id}`, data);
+        } else {
+            await api.post("/membership-logs", data);
+        }
+        formContainer.classList.add("hidden");
+        form.reset();
+        loadLogs();
+    } catch (err) {
+        alert(err.message);
     }
-    formContainer.classList.add("hidden");
-    form.reset();
-    loadLogs();
-  } catch (err) {
-    alert(err.message);
-  }
 });
 
 addBtn.addEventListener("click", openAdd);
 cancelBtn.addEventListener("click", () => {
-  formContainer.classList.add("hidden");
-  form.reset();
+    formContainer.classList.add("hidden");
+    form.reset();
 });
 
 let debounceTimer;
 filterClub.addEventListener("input", () => {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(loadLogs, 400);
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(loadLogs, 400);
 });
 
 loadLogs();

@@ -1,82 +1,82 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Membership Logs · ClubMatch</title>
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/logs.css" />
-  </head>
-  <body>
-    <nav class="navbar">
-      <a href="/" class="nav-logo">ClubMatch</a>
-      <div class="nav-links">
+</head>
+<body>
+<nav class="navbar">
+    <a href="/" class="nav-logo">ClubMatch</a>
+    <div class="nav-links">
         <a href="/">Home</a>
         <a href="/clubs.html">Clubs</a>
         <a href="/membership-logs.html" class="active">Membership Logs</a>
         <a href="/members.html">Members</a>
         <button class="btn-admin" id="admin-btn">Admin</button>
-      </div>
-    </nav>
+    </div>
+</nav>
 
-    <main class="container">
-      <div class="page-header">
-        <h1>Membership Logs</h1>
+<main class="container">
+    <div class="page-header">
+        <h1>Reviews</h1>
         <button id="add-log-btn" class="btn-primary hidden">+ Add Log</button>
-      </div>
+    </div>
 
-      <div class="filters">
-        <input
-          type="text"
-          id="filter-club"
-          placeholder="Filter by club name..."
-        />
-      </div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="club">Club Experience</button>
+        <button class="tab-btn" data-tab="member">Member Experience</button>
+    </div>
 
-      <div id="stats-banner" class="stats-banner hidden">
+    <div class="filters">
+        <input type="text" id="filter-club" placeholder="Filter by club name..." />
+    </div>
+
+    <div id="stats-banner" class="stats-banner hidden">
         📊 Avg weekly hours for <span id="stats-club-name"></span>:
         <strong id="stats-avg"></strong> hrs
-      </div>
+    </div>
 
-      <div id="log-form-container" class="form-container hidden">
+    <div id="log-form-container" class="form-container hidden">
         <h2 id="form-title">Add Membership Log</h2>
         <form id="log-form">
-          <input type="hidden" id="log-id" />
-          <div class="form-group">
-            <label for="log-club">Club Name</label>
-            <input type="text" id="log-club" required />
-          </div>
-          <div class="form-group">
-            <label for="log-hours">Weekly Hours</label>
-            <input type="number" id="log-hours" min="1" required />
-          </div>
-          <div class="form-group">
-            <label for="log-benefits">Benefits</label>
-            <textarea id="log-benefits" rows="3" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="log-challenges">Challenges</label>
-            <textarea id="log-challenges" rows="3" required></textarea>
-          </div>
-          <div class="form-actions">
-            <button type="button" id="cancel-log-btn" class="btn-secondary">
-              Cancel
-            </button>
-            <button type="submit" class="btn-primary">Save Log</button>
-          </div>
+            <input type="hidden" id="log-id" />
+            <div class="form-group">
+                <label for="log-club">Club Name</label>
+                <input type="text" id="log-club" required />
+            </div>
+            <div class="form-group">
+                <label for="log-member">Your Name</label>
+                <input type="text" id="log-member" required />
+            </div>
+            <div class="form-group">
+                <label for="log-hours">Weekly Hours</label>
+                <input type="number" id="log-hours" min="1" required />
+            </div>
+            <div class="form-group">
+                <label for="log-benefits">Benefits</label>
+                <textarea id="log-benefits" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="log-challenges">Challenges</label>
+                <textarea id="log-challenges" rows="3" required></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" id="cancel-log-btn" class="btn-secondary">Cancel</button>
+                <button type="submit" class="btn-primary">Save Log</button>
+            </div>
         </form>
-      </div>
+    </div>
 
-      <div id="logs-list"></div>
-    </main>
+    <div id="logs-list"></div>
+</main>
 
-    <footer class="footer">
-      <p>
-        CS5610 Web Development · Northeastern University · Kanad Motiwale &
-        Aarya Patil
-      </p>
-    </footer>
+<footer class="footer">
+    <p>CS5610 Web Development · Northeastern University · Kanad Motiwale & Aarya Patil</p>
+</footer>
 
-    <script type="module" src="/js/logs.js"></script>
-  </body>
+<script type="module" src="/js/logs.js"></script>
+</body>
 </html>
