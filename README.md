@@ -161,7 +161,7 @@ npm run format    # Format code with Prettier
 
 ## Video Demo
 
-[Watch the demo here]([<video-link>](https://youtu.be/433eLFv7Ljs))
+[Watch the demo here](https://youtu.be/433eLFv7Ljs)
 
 ---
 
