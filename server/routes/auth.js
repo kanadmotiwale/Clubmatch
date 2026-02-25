@@ -4,6 +4,9 @@ import { getDB } from "../db.js";
 
 const router = Router();
 
+// Shuold saperate controllers for each routes in separate files for better maintainability and readability.And also the db calls should be in a service layer and not directly in the route handlers for better separation of concerns and resuability.
+
+//For instance, you could place the DB call to check whether the user exists or not in a service file and then call that service in the route handler. This way, you can reuse that service in both the routes for register as well as login.
 router.post("/register", async (req, res) => {
   try {
     const db = getDB();
@@ -39,6 +42,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// Could have used JWT tokens for authentication it provides better security and does not expose user data in the response
 router.post("/login", async (req, res) => {
   try {
     const db = getDB();
